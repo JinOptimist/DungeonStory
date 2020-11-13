@@ -37,46 +37,43 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         foreach (var cell in maze.CellsWithPlayer)
         {
             GameObject gameObject = null;
+            var isResize = false;
             if (cell is Wall)
             {
                 gameObject = Instantiate(wallBrickTemplate);
+                isResize = true;
             }
             if (cell is Coin)
             {
                 gameObject = Instantiate(coinTemplate);
             }
 
-            TrasformCell(gameObject, cell.X, cell.Z);
+            TrasformCell(gameObject, cell.X, cell.Z, isResize);
         }
-
-        //foreach (var cell in maze.CellsWithPlayer.OfType<Wall>())
-        //{
-        //    var wallGameObject = Instantiate(wallBrickTemplate);
-        //    wallGameObject.GetComponent<Transform>().position
-        //        = new Vector3(cell.X, 1, cell.Z);
-        //}
 
         //Draw border wall
         for (int i = -1; i < width + 1; i++)
         {
-            TrasformCell(Instantiate(wallBrickTemplate), i, -1);
-            TrasformCell(Instantiate(wallBrickTemplate), i, heigth);
+            TrasformCell(Instantiate(wallBrickTemplate), i, -1, true);
+            TrasformCell(Instantiate(wallBrickTemplate), i, heigth, true);
         }
 
         for (int i = 0; i < heigth; i++)
         {
-            TrasformCell(Instantiate(wallBrickTemplate), -1, i);
-            TrasformCell(Instantiate(wallBrickTemplate), width, i);
+            TrasformCell(Instantiate(wallBrickTemplate), -1, i, true);
+            TrasformCell(Instantiate(wallBrickTemplate), width, i, true);
         }
     }
 
-    private void TrasformCell(GameObject gameObject, int x, int z)
+    private void TrasformCell(GameObject gameObject, int x, int z, bool resizeBlock = false)
     {
         if (gameObject != null)
         {
             var cellTransform = gameObject.GetComponent<Transform>();
             cellTransform.position = new Vector3(x * blockSize, 1, z * blockSize);
-            cellTransform.localScale = new Vector3(blockSize, 1, blockSize);
+            
+            var scale = resizeBlock ? blockSize : 1;
+            cellTransform.localScale = new Vector3(scale, 1, scale);
         }
     }
 }
