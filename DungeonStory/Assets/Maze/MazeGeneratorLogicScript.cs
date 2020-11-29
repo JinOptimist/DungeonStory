@@ -73,7 +73,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
             cellTransform.position = new Vector3(x * blockSize, 1, z * blockSize);
             
             var scale = resizeBlock ? blockSize : 1;
-            cellTransform.localScale = new Vector3(scale, 1, scale);
+            cellTransform.localScale = new Vector3(scale, scale, scale);
         }
     }
 }
