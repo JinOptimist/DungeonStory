@@ -289,7 +289,6 @@ GameObject:
   m_Component:
   - component: {fileID: 320160200188796386}
   - component: {fileID: 2598810337733360907}
-  - component: {fileID: -2949735608667293033}
   m_Layer: 0
   m_Name: HeroModel
   m_TagString: Untagged
@@ -338,18 +337,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-2949735608667293033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1547349066106630005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 422e8cd1373b1e74bbb7b6693342efbf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1799081023561892640
 GameObject:
   m_ObjectHideFlags: 0
