@@ -32,7 +32,6 @@ namespace Assets.Maze
         {
             Width = width;
             Height = height;
-            Player = new Player(0, 0, this);
             Cells = new List<ICell>();
         }
 

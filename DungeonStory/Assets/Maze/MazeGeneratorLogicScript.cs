@@ -9,6 +9,9 @@ public class MazeGeneratorLogicScript : MonoBehaviour
 {
     public GameObject wallBrickTemplate;
     public GameObject coinTemplate;
+    public GameObject heroTemplate;
+    public int enterStairsX;
+    public int enterStairsZ;
 
     public int width;
     public int heigth;
@@ -21,8 +24,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
     void Start()
     {
         var mazeBuilder = new MazeBuilder();
-        var maze = mazeBuilder.Generate(width, heigth, cointChance, fontaineCount);
-
+        var maze = mazeBuilder.Generate(width, heigth, enterStairsX, enterStairsZ, cointChance, fontaineCount);
         DrawMaze(maze);
     }
 
@@ -47,6 +49,11 @@ public class MazeGeneratorLogicScript : MonoBehaviour
             {
                 gameObject = Instantiate(coinTemplate);
             }
+            if (cell is Player)
+            {
+                gameObject = Instantiate(heroTemplate);
+                isResize = true;
+            }
 
             TrasformCell(gameObject, cell.X, cell.Z, isResize);
         }
@@ -70,8 +77,8 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         if (gameObject != null)
         {
             var cellTransform = gameObject.GetComponent<Transform>();
-            cellTransform.position = new Vector3(x * blockSize, 1, z * blockSize);
-            
+            cellTransform.position = new Vector3(x * blockSize, 0, z * blockSize);
+
             var scale = resizeBlock ? blockSize : 1;
             cellTransform.localScale = new Vector3(scale, scale, scale);
         }

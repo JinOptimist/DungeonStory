@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Maze
 {
     public class MazeBuilder
     {
         private MazeLevelBusinessObject _maze;
-        private Random _random = new Random();
+        private System.Random _random = new System.Random();
 
-        public MazeLevelBusinessObject Generate(int width, int height, 
+        public MazeLevelBusinessObject Generate(int width, int height,
+            int enterStairsX, int enterStairsZ,
             double chanceOfCoin = 0.1, int maxCountOfFontaine = 3)
         {
             if (width < 3)
@@ -28,13 +30,29 @@ namespace Assets.Maze
 
             GenerateWall();
 
-            GenerateGround();
+            GenerateGround(enterStairsX, enterStairsZ);
 
             GenerateWell(maxCountOfFontaine);
 
             GenerateCoins(chanceOfCoin);
 
+            GeneratePlayer(enterStairsX, enterStairsZ);
+
             return _maze;
+        }
+
+        private void GeneratePlayer(int enterStairsX, int enterStairsZ)
+        {
+            var stairs = _maze.Cells.Single(c => c.X == enterStairsX && c.Z == enterStairsZ);
+            var nearCells = GetNearCells<BaseCell>(stairs).Where(x => !(x is Wall));
+            var randomGround = GetRandom(nearCells);
+            if (randomGround == null)
+            {
+                Debug.LogError("There is no ground near stairs");
+                Debug.LogError($"Stairs [{stairs.X},{stairs.Z}]");
+            }
+            var player = new Player(randomGround.X, randomGround.Z, _maze);
+            _maze.Player = player;
         }
 
         private void GenerateWall()
@@ -49,9 +67,9 @@ namespace Assets.Maze
             }
         }
 
-        private void GenerateGround()
+        private void GenerateGround(int enterStairsX, int enterStairsZ)
         {
-            var keyCell = _maze.Cells.First();
+            var keyCell = _maze.Cells.Single(c => c.X == enterStairsX && c.Z == enterStairsZ);
             var greenWall = new List<ICell>();
             do
             {
