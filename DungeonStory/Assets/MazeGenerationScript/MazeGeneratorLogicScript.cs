@@ -10,6 +10,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
     public GameObject wallBrickTemplate;
     public GameObject coinTemplate;
     public GameObject heroTemplate;
+    public GameObject groundTemplate;
     public int enterStairsX;
     public int enterStairsZ;
 
@@ -52,6 +53,11 @@ public class MazeGeneratorLogicScript : MonoBehaviour
             if (cell is Player)
             {
                 gameObject = Instantiate(heroTemplate);
+                isResize = true;
+            }
+            if (cell is Ground)
+            {
+                gameObject = Instantiate(groundTemplate);
                 isResize = true;
             }
 
