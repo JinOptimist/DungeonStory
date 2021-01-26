@@ -1,11 +1,12 @@
 ﻿using Assets.Helpers;
+using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OnWallClick : MonoBehaviour
+public class OnTriggerClickAndActivate : MonoBehaviour, ITriggerClick
 {
-    void OnMouseDown()
+    public void OnTriggerClick()
     {
         var mainController = CoreObjectHelper.GetMainController();
         mainController.ActivateGameObject(gameObject);
