@@ -27,10 +27,10 @@ public class TorusScript : MonoBehaviour
     private Vector3 GetPointOnTorus(float u, float v)
     {
         Vector3 p;
-        float r = (curveRadius + torusRadius * Mathf.Cos(v));
-        p.x = r * Mathf.Sin(u);
-        p.y = r * Mathf.Cos(u);
-        p.z = torusRadius * Mathf.Sin(v);
+        float r = (curveRadius + torusRadius * Mathf.Cos(v)) / 2;
+        p.x = r * Mathf.Sin(u + Mathf.PI / 4);
+        p.y = torusRadius * Mathf.Sin(v);
+        p.z = r * Mathf.Cos(u + Mathf.PI / 4);
         return p;
     }
 
