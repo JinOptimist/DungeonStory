@@ -37,7 +37,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
 
     private void DrawMaze(MazeLevelBusinessObject maze)
     {
-        foreach (var cell in maze.CellsWithPlayer)
+        foreach (var cell in maze.Cells)
         {
             GameObject gameObject = null;
             var isResize = false;
@@ -50,12 +50,8 @@ public class MazeGeneratorLogicScript : MonoBehaviour
             {
                 gameObject = Instantiate(coinTemplate);
             }
-            if (cell is Player)
-            {
-                gameObject = Instantiate(heroTemplate);
-                isResize = true;
-            }
-            if (cell is Ground)
+            
+            if (cell is Ground || cell is Player)
             {
                 gameObject = Instantiate(groundTemplate);
                 isResize = true;
@@ -63,6 +59,9 @@ public class MazeGeneratorLogicScript : MonoBehaviour
 
             TrasformCell(gameObject, cell.X, cell.Z, isResize);
         }
+
+        var player = maze.Player;
+        TrasformCell(Instantiate(heroTemplate), player.X, player.Z, true);
 
         //Draw border wall
         for (int i = -1; i < width + 1; i++)

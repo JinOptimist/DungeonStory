@@ -690,9 +690,9 @@ MonoBehaviour:
     type: 3}
   enterStairsX: 1
   enterStairsZ: 1
-  width: 3
-  heigth: 3
-  cointChance: 0.1
+  width: 6
+  heigth: 6
+  cointChance: 0.3
   fontaineCount: 3
   blockSize: 1
 --- !u!4 &1067594889
