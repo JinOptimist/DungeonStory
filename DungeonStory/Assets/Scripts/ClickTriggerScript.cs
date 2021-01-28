@@ -11,7 +11,12 @@ public class ClickTriggerScript : MonoBehaviour
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Physics.Raycast(ray, out RaycastHit hit);
-        var gameObject = hit.collider.gameObject;
+        if (hit.Equals(default(RaycastHit)))
+        {
+            return;
+        }
+
+        var gameObject = hit.collider?.gameObject;
         if (Input.GetMouseButtonDown(0))
         {
             var iTriggerClick = gameObject
@@ -22,7 +27,7 @@ public class ClickTriggerScript : MonoBehaviour
             }
         }
 
-        var newHoverCell = gameObject.GetComponentInParent<OnHoverCell>();
+        var newHoverCell = gameObject?.GetComponentInParent<OnHoverCell>();
         if (newHoverCell != null)
         {
             if (_oldHoveredObject != null)
