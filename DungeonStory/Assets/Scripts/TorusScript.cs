@@ -21,6 +21,13 @@ public class TorusScript : MonoBehaviour
         mesh.name = "Torus";
         SetVertices();
         SetTriangles();
+
+        var colors = new Color[torusSegmentCount * curveSegmentCount * 4];
+        for (int i = 0; i < colors.Length; i++)
+        {
+            colors[i] = new Color(0, 100, 100);
+        }
+        mesh.SetColors(colors);
     }
 
     //Create Torus
