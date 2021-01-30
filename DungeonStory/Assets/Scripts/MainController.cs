@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Helpers;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -21,5 +22,12 @@ public class MainController : MonoBehaviour
         ActiveObject = gameObject;
         ActiveObject.GetComponentInParent<Animator>()
             .SetBool(IsCubeActive, true);
+    }
+
+    public void MoveHeroToCell(GameObject gameObject)
+    {
+        var hero = CoreObjectHelper.GetHeroGameObject();
+        var cell = gameObject.GetComponentInChildren<BaseCellScript>();
+        CoreObjectHelper.MoveCellToPosition(hero, cell.X, cell.Z);
     }
 }

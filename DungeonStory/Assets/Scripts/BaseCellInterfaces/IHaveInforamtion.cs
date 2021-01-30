@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.BaseCellInterfaces
 {
-    public interface ITriggerClick
+    public interface IHaveInforamtion
     {
-        void OnTriggerClick();
+        void ShowButtonForAction();
     }
 }

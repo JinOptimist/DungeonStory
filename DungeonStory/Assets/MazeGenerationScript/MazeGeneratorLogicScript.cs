@@ -1,4 +1,5 @@
-﻿using Assets.Maze;
+﻿using Assets.Helpers;
+using Assets.Maze;
 using Assets.Maze.Cell;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,52 +41,39 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         foreach (var cell in maze.Cells)
         {
             GameObject gameObject = null;
-            var isResize = false;
             if (cell is Wall)
             {
                 gameObject = Instantiate(wallBrickTemplate);
-                isResize = true;
             }
             if (cell is Coin)
             {
                 gameObject = Instantiate(coinTemplate);
             }
-            
+
             if (cell is Ground || cell is Player)
             {
                 gameObject = Instantiate(groundTemplate);
-                isResize = true;
             }
 
-            TrasformCell(gameObject, cell.X, cell.Z, isResize);
+            CoreObjectHelper.MoveCellToPosition(gameObject, cell.X, cell.Z);
         }
 
         var player = maze.Player;
-        TrasformCell(Instantiate(heroTemplate), player.X, player.Z, true);
+        CoreObjectHelper.MoveCellToPosition(Instantiate(heroTemplate), player.X, player.Z);
 
         //Draw border wall
         for (int i = -1; i < width + 1; i++)
         {
-            TrasformCell(Instantiate(wallBrickTemplate), i, -1, true);
-            TrasformCell(Instantiate(wallBrickTemplate), i, heigth, true);
+            CoreObjectHelper.MoveCellToPosition(Instantiate(wallBrickTemplate), i, -1);
+            CoreObjectHelper.MoveCellToPosition(Instantiate(wallBrickTemplate), i, heigth);
         }
 
         for (int i = 0; i < heigth; i++)
         {
-            TrasformCell(Instantiate(wallBrickTemplate), -1, i, true);
-            TrasformCell(Instantiate(wallBrickTemplate), width, i, true);
+            CoreObjectHelper.MoveCellToPosition(Instantiate(wallBrickTemplate), -1, i);
+            CoreObjectHelper.MoveCellToPosition(Instantiate(wallBrickTemplate), width, i);
         }
     }
 
-    private void TrasformCell(GameObject gameObject, int x, int z, bool resizeBlock = false)
-    {
-        if (gameObject != null)
-        {
-            var cellTransform = gameObject.GetComponent<Transform>();
-            cellTransform.position = new Vector3(x * blockSize, 0, z * blockSize);
 
-            var scale = resizeBlock ? blockSize : 1;
-            cellTransform.localScale = new Vector3(scale, scale, scale);
-        }
-    }
 }

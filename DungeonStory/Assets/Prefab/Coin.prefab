@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1101442218003696941}
   - component: {fileID: 8827494860313103735}
   m_Layer: 8
-  m_Name: CoinModel
+  m_Name: CoinMinimapModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -198,7 +198,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7898032063788163853}
   - component: {fileID: 1680752671}
-  - component: {fileID: 9005459804153972325}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Untagged
@@ -242,18 +241,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &9005459804153972325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8073219511244009023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ce13ebf68444f5438aad8141d26b6d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8655624330208286622
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -264,7 +251,7 @@ PrefabInstance:
     - target: {fileID: 372558188259832962, guid: 2d581095ceda7784abc110082e77bf76,
         type: 3}
       propertyPath: m_Name
-      value: GroundCell
+      value: BaseCell
       objectReference: {fileID: 0}
     - target: {fileID: 7954322191598606143, guid: 2d581095ceda7784abc110082e77bf76,
         type: 3}
