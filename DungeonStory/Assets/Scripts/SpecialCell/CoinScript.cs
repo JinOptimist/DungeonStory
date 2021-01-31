@@ -1,13 +1,11 @@
 ﻿using Assets.Helpers;
 using Assets.Scripts.BaseCellInterfaces;
+using Assets.Scripts.SpecialCell;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CoinScript : MonoBehaviour, IHaveInforamtion
+public class CoinScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 {
-    public void ShowButtonForAction()
-    {
-        CoreObjectHelper.GetMainController().SetInfoText("Это монетка. Её можно подобрать");
-    }
+    public string InfoText => "Это монетка. Её можно подобрать";
 }

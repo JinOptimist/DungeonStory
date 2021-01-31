@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CoinCollectScript : MonoBehaviour
+public class CoinCollectScript : MonoBehaviour, IPointerClickHandler
 {
-    public void CollectCoin()
+    public void OnPointerClick(PointerEventData eventData)
     {
         Destroy(CoreObjectHelper.GetMainController().ActiveObject);
     }

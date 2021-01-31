@@ -49,7 +49,5 @@ namespace Assets.Helpers
             //var scale = resizeBlock ? blockSize : 1;
             //cellTransform.localScale = new Vector3(scale, scale, scale);
         }
-    
-        
     }
 }

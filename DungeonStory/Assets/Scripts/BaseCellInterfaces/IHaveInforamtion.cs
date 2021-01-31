@@ -8,6 +8,6 @@ namespace Assets.Scripts.BaseCellInterfaces
 {
     public interface IHaveInforamtion
     {
-        void ShowButtonForAction();
+        string InfoText { get; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Assets.Helpers;
 using Assets.Scripts.BaseCellInterfaces;
+using Assets.Scripts.SpecialCell;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Animations;
@@ -11,19 +12,25 @@ public class MainController : MonoBehaviour
     public GameObject ActiveObject { get; private set; }
 
     public GameObject InfoBlockUIMain { get; private set; }
-    public GameObject InfoBlockUIText { get; private set; }
+    public GameObject CellInfoUIText { get; private set; }
+    public GameObject InfoTextBlock { get; private set; }
 
     public const string IsCubeActive = "IsActive";
 
-    public const string InfoBlockMainName = "InfoBlock";
-    public const string InfoBlockTextName = "CellInfoUIText";
+    public const string InfoBlockMainName = "InfoBlockUIMain";
+    public const string CellInfoUITextName = "CellInfoUIText";
+
+    public const string InfoTextBlockName = "InfoTextBlock";
 
     void Start()
     {
         InfoBlockUIMain = GameObject.Find(InfoBlockMainName);
-        InfoBlockUIText = GameObject.Find(InfoBlockTextName);
+        CellInfoUIText = GameObject.Find(CellInfoUITextName);
+
+        InfoTextBlock = GameObject.Find(InfoTextBlockName);
 
         InfoBlockUIMain.SetActive(false);
+        InfoTextBlock.SetActive(false);
     }
 
     public void ActivateGameObject(GameObject gameObject)
@@ -31,20 +38,21 @@ public class MainController : MonoBehaviour
         if (ActiveObject != null)
         {
             //Deactivate old active obj
-            ActiveObject.GetComponentInParent<Animator>()
+            ActiveObject.GetComponentInChildren<Animator>()
                 .SetBool(IsCubeActive, false);
         }
 
-        ActiveObject = gameObject;
+        ActiveObject = ((MonoBehaviour)gameObject.GetComponentInParent<IFinalCell>()).gameObject;
         ActiveObject
-            .GetComponentInParent<Animator>()
+            .GetComponentInChildren<Animator>()
             .SetBool(IsCubeActive, true);
 
         //HideButton();
-        var inforamtion = ActiveObject.GetComponentInParent<IHaveInforamtion>();
+        var inforamtion = ActiveObject.GetComponentInChildren<IHaveInforamtion>();
         if (inforamtion != null)
         {
-            ActiveObject.GetComponentInParent<IHaveInforamtion>()?.ShowButtonForAction();
+            var infoText = ActiveObject.GetComponentInChildren<IHaveInforamtion>()?.InfoText;
+            CoreObjectHelper.GetMainController().SetInfoText(infoText);
         }
         else
         {
@@ -68,7 +76,6 @@ public class MainController : MonoBehaviour
         }
 
         InfoBlockUIMain.SetActive(true);
-
-        InfoBlockUIText.GetComponent<Text>().text = infoText;
+        CellInfoUIText.GetComponent<Text>().text = infoText;
     }
 }
