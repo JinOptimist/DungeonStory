@@ -8,6 +8,7 @@ public class CoinCollectScript : MonoBehaviour, IPointerClickHandler
 {
     public void OnPointerClick(PointerEventData eventData)
     {
-        Destroy(CoreObjectHelper.GetMainController().ActiveObject);
+        var activeObject = CoreObjectHelper.GetMainController().ActiveObject;
+        CoreObjectHelper.GetMainController().ReplaceToGround(activeObject);
     }
 }

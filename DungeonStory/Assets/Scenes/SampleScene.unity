@@ -795,14 +795,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 538b564de02e69245ad965b6316f75a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallBrickTemplate: {fileID: 159042025259191057, guid: 657ee75f02eab4648a213e3e756b60be,
-    type: 3}
-  coinTemplate: {fileID: 8073219511244009023, guid: b1e86c419574d0b4bb0427735c95a9cf,
-    type: 3}
-  heroTemplate: {fileID: 1474913008680504349, guid: 9a270f9b79bc1594d817ffc1cdc300bf,
-    type: 3}
-  groundTemplate: {fileID: 533271776633553463, guid: b9e6777b9bed7dd4a88eea35b3374588,
-    type: 3}
   enterStairsX: 1
   enterStairsZ: 1
   width: 6
@@ -835,7 +827,7 @@ GameObject:
   - component: {fileID: 1347513427}
   - component: {fileID: 1347513426}
   m_Layer: 0
-  m_Name: ActiveGameObjController
+  m_Name: MainController
   m_TagString: MainController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -853,6 +845,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df7d472b157dbcf47b6c6a99d12dcdc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wallBrickTemplate: {fileID: 159042025259191057, guid: 657ee75f02eab4648a213e3e756b60be,
+    type: 3}
+  coinTemplate: {fileID: 8073219511244009023, guid: b1e86c419574d0b4bb0427735c95a9cf,
+    type: 3}
+  heroTemplate: {fileID: 1474913008680504349, guid: 9a270f9b79bc1594d817ffc1cdc300bf,
+    type: 3}
+  groundTemplate: {fileID: 533271776633553463, guid: b9e6777b9bed7dd4a88eea35b3374588,
+    type: 3}
 --- !u!4 &1347513427
 Transform:
   m_ObjectHideFlags: 0

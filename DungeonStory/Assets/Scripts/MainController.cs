@@ -11,6 +11,13 @@ public class MainController : MonoBehaviour
 {
     public GameObject ActiveObject { get; private set; }
 
+    //Prefab for cell
+    public GameObject wallBrickTemplate;
+    public GameObject coinTemplate;
+    public GameObject heroTemplate;
+    public GameObject groundTemplate;
+
+    //UI
     public GameObject InfoBlockUIMain { get; private set; }
     public GameObject CellInfoUIText { get; private set; }
     public GameObject InfoTextBlock { get; private set; }
@@ -58,6 +65,17 @@ public class MainController : MonoBehaviour
         {
             SetInfoText("");
         }
+    }
+
+    public void ReplaceToGround(GameObject gameObject)
+    {
+        var baseCell = gameObject.GetComponentInChildren<BaseCellScript>();
+
+        var finalCell = ((MonoBehaviour)gameObject.GetComponentInParent<IFinalCell>()).gameObject;
+        Destroy(finalCell);
+
+        var ground = Instantiate(groundTemplate);
+        CoreObjectHelper.MoveCellToPosition(ground, baseCell.X, baseCell.Z);
     }
 
     public void MoveHeroToCell(GameObject gameObject)

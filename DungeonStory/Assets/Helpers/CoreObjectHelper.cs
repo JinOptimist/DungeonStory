@@ -38,7 +38,7 @@ namespace Assets.Helpers
             var cell = gameObject.GetComponentInChildren<BaseCellScript>();
             if (cell == null)
             {
-                var fail = 1;
+                Debug.LogWarning("We try to move object which doesn't have BaseCellScript");
             }
             cell.X = x;
             cell.Z = z;
