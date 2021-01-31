@@ -18,27 +18,33 @@ public class MainController : MonoBehaviour
     public GameObject groundTemplate;
     public GameObject fountainTemplate;
 
+    //Prefab for UI
+    public GameObject abilityTemplate;
+
     //UI
-    public GameObject InfoBlockUIMain { get; private set; }
-    public GameObject CellInfoUIText { get; private set; }
-    public GameObject InfoTextBlock { get; private set; }
+    public GameObject UIInfoBlockMain { get; private set; }
+    public GameObject UIInfoCellText { get; private set; }
+    public GameObject UIInfoBlockText { get; private set; }
+    public GameObject CellActionGroup { get; private set; }
 
+    //UI
+    public const string UIInfoBlockMainName = "UIInfoBlockMain";
+    public const string UIInfoBlockTextName = "UIInfoBlockText";
+    public const string UIInfoCellTextName = "UIInfoCellText";
+    public const string CellActionGroupName = "CellActionGroup";
+    //Animation
     public const string IsCubeActive = "IsActive";
-
-    public const string InfoBlockMainName = "InfoBlockUIMain";
-    public const string CellInfoUITextName = "CellInfoUIText";
-
-    public const string InfoTextBlockName = "InfoTextBlock";
 
     void Start()
     {
-        InfoBlockUIMain = GameObject.Find(InfoBlockMainName);
-        CellInfoUIText = GameObject.Find(CellInfoUITextName);
+        UIInfoBlockMain = GameObject.Find(UIInfoBlockMainName);
+        UIInfoCellText = GameObject.Find(UIInfoCellTextName);
+        UIInfoBlockText = GameObject.Find(UIInfoBlockTextName);
 
-        InfoTextBlock = GameObject.Find(InfoTextBlockName);
+        CellActionGroup = GameObject.Find(CellActionGroupName);
 
-        InfoBlockUIMain.SetActive(false);
-        InfoTextBlock.SetActive(false);
+        UIInfoBlockMain.SetActive(false);
+        UIInfoBlockText.SetActive(false);
     }
 
     public void ActivateGameObject(GameObject gameObject)
@@ -50,12 +56,12 @@ public class MainController : MonoBehaviour
                 .SetBool(IsCubeActive, false);
         }
 
-        ActiveObject = ((MonoBehaviour)gameObject.GetComponentInParent<IFinalCell>()).gameObject;
-        ActiveObject
-            .GetComponentInChildren<Animator>()
-            .SetBool(IsCubeActive, true);
+        var finalCell = gameObject.GetComponentInParent<IFinalCell>();
+        ActiveObject = ((MonoBehaviour)finalCell).gameObject;
+        RunActiveAnimation(ActiveObject);
 
-        //HideButton();
+        ShowAbilityForActivecell(finalCell);
+
         var inforamtion = ActiveObject.GetComponentInChildren<IHaveInforamtion>();
         if (inforamtion != null)
         {
@@ -68,7 +74,42 @@ public class MainController : MonoBehaviour
         }
     }
 
-    public void ReplaceToGround(GameObject gameObject)
+    private void RunActiveAnimation(GameObject gameObject)
+    {
+        ActiveObject
+            .GetComponentInChildren<Animator>()
+            .SetBool(IsCubeActive, true);
+    }
+
+    private void ShowAbilityForActivecell(IFinalCell finalCell)
+    {
+        foreach (Transform child in CellActionGroup.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        for (var i = 0; i < finalCell.Abilities.Count; i++)
+        {
+            var ability = finalCell.Abilities[i];
+            var uiAbility = Instantiate(abilityTemplate);
+            uiAbility.transform.parent = CellActionGroup.GetComponent<Transform>();
+
+            var rectTransform = uiAbility.GetComponent<RectTransform>();
+            var width = rectTransform.rect.width;
+            rectTransform.localPosition = new Vector3(width * i, 0, 0);
+
+            uiAbility.GetComponent<AbilityUIClickScript>().Ability = ability;
+
+            uiAbility.GetComponentInChildren<Text>().text = ability.Name;
+            
+            if (!ability.Abailable)
+            {
+                uiAbility.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f);
+            }
+        }
+    }
+
+    public GameObject ReplaceToGround(GameObject gameObject)
     {
         var baseCell = gameObject.GetComponentInChildren<BaseCellScript>();
 
@@ -77,6 +118,7 @@ public class MainController : MonoBehaviour
 
         var ground = Instantiate(groundTemplate);
         CoreObjectHelper.MoveCellToPosition(ground, baseCell.X, baseCell.Z);
+        return ground;
     }
 
     public void MoveHeroToCell(GameObject gameObject)
@@ -90,11 +132,11 @@ public class MainController : MonoBehaviour
     {
         if (string.IsNullOrEmpty(infoText))
         {
-            InfoBlockUIMain.SetActive(false);
+            UIInfoBlockMain.SetActive(false);
             return;
         }
 
-        InfoBlockUIMain.SetActive(true);
-        CellInfoUIText.GetComponent<Text>().text = infoText;
+        UIInfoBlockMain.SetActive(true);
+        UIInfoCellText.GetComponent<Text>().text = infoText;
     }
 }

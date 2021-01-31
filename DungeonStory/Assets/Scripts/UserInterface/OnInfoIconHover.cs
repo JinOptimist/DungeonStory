@@ -8,11 +8,11 @@ public class OnInfoIconHover : MonoBehaviour, IPointerEnterHandler, IPointerExit
 {
     public void OnPointerEnter(PointerEventData eventData)
     {
-        CoreObjectHelper.GetMainController().InfoTextBlock.SetActive(true);
+        CoreObjectHelper.GetMainController().UIInfoBlockText.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        CoreObjectHelper.GetMainController().InfoTextBlock.SetActive(false);
+        CoreObjectHelper.GetMainController().UIInfoBlockText.SetActive(false);
     }
 }

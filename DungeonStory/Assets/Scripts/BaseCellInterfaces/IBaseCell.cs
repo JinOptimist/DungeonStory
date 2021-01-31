@@ -6,8 +6,5 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.BaseCellInterfaces
 {
-    interface IBaseCell : IClicked, IHovered
-    {
-        
-    }
+    interface IBaseCell : IClicked, IHovered { }
 }
