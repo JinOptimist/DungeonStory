@@ -46,6 +46,11 @@ public class MazeGeneratorLogicScript : MonoBehaviour
                 gameObject = Instantiate(mainController.groundTemplate);
             }
 
+            if (cell is Fountain)
+            {
+                gameObject = Instantiate(mainController.fountainTemplate);
+            }
+
             CoreObjectHelper.MoveCellToPosition(gameObject, cell.X, cell.Z);
         }
 

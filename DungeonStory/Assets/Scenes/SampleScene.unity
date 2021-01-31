@@ -853,6 +853,8 @@ MonoBehaviour:
     type: 3}
   groundTemplate: {fileID: 533271776633553463, guid: b9e6777b9bed7dd4a88eea35b3374588,
     type: 3}
+  fountainTemplate: {fileID: 842992124066134266, guid: cdc7a2dc10a97a6478cb9efc2741d05a,
+    type: 3}
 --- !u!4 &1347513427
 Transform:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ public class MainController : MonoBehaviour
     public GameObject coinTemplate;
     public GameObject heroTemplate;
     public GameObject groundTemplate;
+    public GameObject fountainTemplate;
 
     //UI
     public GameObject InfoBlockUIMain { get; private set; }
