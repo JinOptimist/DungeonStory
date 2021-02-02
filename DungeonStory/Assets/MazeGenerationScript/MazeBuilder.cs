@@ -1,4 +1,5 @@
 ﻿using Assets.Maze.Cell;
+using Assets.MazeGenerationScript.Cell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,13 @@ namespace Assets.Maze
 
         public MazeLevelBusinessObject Generate(int width, int height,
             int enterStairsX, int enterStairsZ,
-            double chanceOfCoin = 0.1, int maxCountOfFontaine = 3)
+            double chanceOfCoin = 0.1, int maxCountOfFontaine = 3, int countOfEnemies = 3)
         {
             if (width < 3)
             {
                 width = 3;
             }
+
             if (height < 3)
             {
                 height = 3;
@@ -38,7 +40,22 @@ namespace Assets.Maze
 
             GeneratePlayer(enterStairsX, enterStairsZ);
 
+            GenerateEnemies(countOfEnemies);
+
             return _maze;
+        }
+
+        private void GenerateEnemies(int countOfEnemies)
+        {
+            _maze.Enemies = new List<Enemy>();
+            var grounds = _maze.Cells.OfType<Ground>().ToList();
+            for (int i = 0; i < countOfEnemies; i++)
+            {
+                var ground = GetRandom(grounds);
+                var enemy = new Enemy(ground.X, ground.Z, _maze);
+                grounds.Remove(ground as Ground);
+                _maze.Enemies.Add(enemy);
+            }
         }
 
         private void GeneratePlayer(int enterStairsX, int enterStairsZ)

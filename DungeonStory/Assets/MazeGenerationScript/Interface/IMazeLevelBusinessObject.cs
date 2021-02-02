@@ -6,7 +6,7 @@ namespace Assets.Maze
     public interface IMazeLevelBusinessObject
     {
         List<ICell> Cells { get; set; }
-        List<ICell> CellsWithPlayer { get; }
+        List<ICell> CellsWithCharacters { get; }
         int Height { get; set; }
         Player Player { get; set; }
         int Width { get; set; }

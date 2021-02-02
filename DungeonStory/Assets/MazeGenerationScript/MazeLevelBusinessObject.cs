@@ -1,4 +1,5 @@
 ﻿using Assets.Maze.Cell;
+using Assets.MazeGenerationScript.Cell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,22 @@ namespace Assets.Maze
 
         public Player Player { get; set; }
 
+        public List<Enemy> Enemies { get; set; }
+
         /// <summary>
         /// Только ландшафт без героя
         /// </summary>
         public List<ICell> Cells { get; set; }
-        public List<ICell> CellsWithPlayer
+        public List<ICell> CellsWithCharacters
         {
             get
             {
                 var copyCells = Cells.Select(x => x).ToList();
                 ReplaceCell(copyCells, Player);
+                if (Enemies.Any())
+                {
+                    Enemies.ForEach(x => ReplaceCell(copyCells, x));
+                }
                 return copyCells;
             }
         }

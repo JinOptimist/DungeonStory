@@ -44,10 +44,15 @@ namespace Assets.Helpers
             cell.Z = z;
 
             var cellTransform = gameObject.GetComponent<Transform>();
-            cellTransform.position = new Vector3(x * blockSize, 0, z * blockSize);
+            cellTransform.position = GetPositionByCoordinate(x, z);
 
             //var scale = resizeBlock ? blockSize : 1;
             //cellTransform.localScale = new Vector3(scale, scale, scale);
+        }
+
+        public static Vector3 GetPositionByCoordinate(int x, int z)
+        {
+            return new Vector3(x * blockSize, 0, z * blockSize);
         }
     }
 }

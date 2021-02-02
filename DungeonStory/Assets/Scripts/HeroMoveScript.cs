@@ -1,36 +1,41 @@
-﻿using System.Collections;
+﻿using Assets.Helpers;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HeroMoveScript : MonoBehaviour
 {
+    public float moveAnimationSpeed;
     // Update is called once per frame
     void Update()
     {
-        var moveVector = new Vector3(0, 0, 0);
+        KeyboardMove();
+
+        var baseCell = GetComponentInChildren<BaseCellScript>();
+        var finalPosition = CoreObjectHelper.GetPositionByCoordinate(baseCell.X, baseCell.Z);
+
+        var lerp = Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * moveAnimationSpeed);
+        transform.position = lerp;
+    }
+
+    public void KeyboardMove()
+    {
+        var baseCell = GetComponentInChildren<BaseCellScript>();
         if (Input.GetKeyUp(KeyCode.W))
         {
-            moveVector = new Vector3(0, 0, 1);
+            baseCell.Z++;
         }
         if (Input.GetKeyUp(KeyCode.S))
         {
-            moveVector = new Vector3(0, 0, -1);
+            baseCell.Z--;
         }
         if (Input.GetKeyUp(KeyCode.A))
         {
-            moveVector = new Vector3(-1, 0, 0);
+            baseCell.X--;
         }
         if (Input.GetKeyUp(KeyCode.D))
         {
-            moveVector = new Vector3(1, 0, 0);
+            baseCell.X++;
         }
-
-        gameObject.transform.position = gameObject.transform.position + moveVector;
-        //float posY = Mathf.SmoothDamp(transform.position.y, player.transform.position.y + distToPlayer, ref velocity.y, smoothTimeY);
-        //if (Input.GetMouseButton(0) || player.transform.position.y > transform.position.y - 2.6)
-        //{
-        //    transform.position = new Vector3(transform.position.x, posY, transform.position.z);
-        //}
-
     }
 }

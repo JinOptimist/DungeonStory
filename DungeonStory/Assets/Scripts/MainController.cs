@@ -17,6 +17,7 @@ public class MainController : MonoBehaviour
     public GameObject heroTemplate;
     public GameObject groundTemplate;
     public GameObject fountainTemplate;
+    public GameObject enemyTemplate;
 
     //Prefab for UI
     public GameObject abilityTemplate;
@@ -125,7 +126,8 @@ public class MainController : MonoBehaviour
     {
         var hero = CoreObjectHelper.GetHeroGameObject();
         var cell = gameObject.GetComponentInChildren<BaseCellScript>();
-        CoreObjectHelper.MoveCellToPosition(hero, cell.X, cell.Z);
+        hero.GetComponent<BaseCellScript>().X = cell.X;
+        hero.GetComponent<BaseCellScript>().Z = cell.Z;
     }
 
     public void SetInfoText(string infoText)

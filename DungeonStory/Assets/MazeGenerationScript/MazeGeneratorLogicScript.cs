@@ -1,6 +1,7 @@
 ﻿using Assets.Helpers;
 using Assets.Maze;
 using Assets.Maze.Cell;
+using Assets.MazeGenerationScript.Cell;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
                 gameObject = Instantiate(mainController.coinTemplate);
             }
 
-            if (cell is Ground || cell is Player)
+            if (cell is Ground || cell is Player || cell is Enemy)
             {
                 gameObject = Instantiate(mainController.groundTemplate);
             }
@@ -56,6 +57,10 @@ public class MazeGeneratorLogicScript : MonoBehaviour
 
         var player = maze.Player;
         CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.heroTemplate), player.X, player.Z);
+
+        maze.Enemies.ForEach(enemy =>
+            CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.enemyTemplate), enemy.X, enemy.Z)
+        );
 
         //Draw border wall
         for (int i = -1; i < width + 1; i++)

@@ -255,6 +255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraY: 8
+  speed: 3
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +689,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offsetY: 3
   offsetZ: -1.2
+  speed: 1
 --- !u!1 &1067594887
 GameObject:
   m_ObjectHideFlags: 0
@@ -719,8 +721,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enterStairsX: 1
   enterStairsZ: 1
-  width: 6
-  heigth: 6
+  width: 7
+  heigth: 9
   cointChance: 0.3
   fontaineCount: 3
   blockSize: 1
@@ -776,6 +778,8 @@ MonoBehaviour:
   groundTemplate: {fileID: 533271776633553463, guid: b9e6777b9bed7dd4a88eea35b3374588,
     type: 3}
   fountainTemplate: {fileID: 842992124066134266, guid: cdc7a2dc10a97a6478cb9efc2741d05a,
+    type: 3}
+  enemyTemplate: {fileID: 3101433043350361630, guid: 7abd90c1e5f78dd46a3e731e14f61874,
     type: 3}
   abilityTemplate: {fileID: 2185763264357669635, guid: d02afb5aba8324f4f974acc8a64706fe,
     type: 3}
