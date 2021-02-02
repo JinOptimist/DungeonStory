@@ -13,6 +13,7 @@ public class BaseCellScript : MonoBehaviour, IHovered, IClicked
 
     public void OnMouseIn()
     {
+        Debug.Log($"H: [{X}, {Z}]");
         gameObject.GetComponentInParent<Animator>().SetBool(IsHover, true);
     }
 

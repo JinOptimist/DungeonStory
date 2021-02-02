@@ -20,9 +20,20 @@ public class WallScript : MonoBehaviour, IHaveInforamtion, IFinalCell
            "Бум",
            "Бум",
            true));
+
+        Abilities.Add(new Ability(
+           new Action(BreakWall),
+           "Сломать",
+           "Сломать",
+           true));
     }
 
     public void HitWall()
+    {
+        Debug.Log("We hit the wall");
+    }
+
+    public void BreakWall()
     {
         Debug.Log("We hit the wall");
     }
