@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MainCameraFollowScript : MonoBehaviour
 {
-    public float offsetY;
-    public float offsetZ;
+    public float offsetUp;
+    public float offsetBack;
 
     public float speed;
 
@@ -14,24 +14,51 @@ public class MainCameraFollowScript : MonoBehaviour
         var scrollWhell = Input.GetAxis("Mouse ScrollWheel");
         if (scrollWhell > 0f) // forward
         {
-            offsetY /= 1.1f;
-            offsetZ /= 1.1f;
+            offsetUp /= 1.1f;
+            offsetBack /= 1.1f;
         }
         else if (scrollWhell < 0f) // backwards
         {
-            offsetY *= 1.1f;
-            offsetZ *= 1.1f;
+            offsetUp *= 1.1f;
+            offsetBack *= 1.1f;
         }
     }
 
     void LateUpdate()
     {
+        //if (transform.eulerAngles.y < 360)
+        //{
+        //    transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + 360, transform.eulerAngles.z);
+        //}
+        //if (transform.eulerAngles.y > 720)
+        //{
+        //    transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y - 360, transform.eulerAngles.z);
+        //}
+
         var player = GameObject.FindGameObjectWithTag("MainHero");
         if (player != null)
         {
-            var finalPosition = player.transform.position + new Vector3(0, offsetY, offsetZ);
+            var h = player.GetComponent<HeroMoveScript>();
+            
+            var x = offsetBack * Mathf.Sin(h.rotationYAngle * Mathf.Deg2Rad);
+            var z = offsetBack * Mathf.Cos(h.rotationYAngle * Mathf.Deg2Rad);
+
+            var finalPosition = player.transform.position + new Vector3(x, offsetUp, z);
             var lerp = Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * speed);
-            gameObject.GetComponent<Transform>().position = lerp;
+            transform.position = lerp;
+
+            //if (h.rotationYAngle < 0)
+            //{
+            //    h.rotationYAngle += 360;
+            //    //transform.eulerAngles = new Vector3(
+            //    //    transform.eulerAngles.x, 
+            //    //    transform.eulerAngles.y + 360, 
+            //    //    transform.eulerAngles.z);
+            //}
+
+            var finalRotation = new Vector3(transform.eulerAngles.x, h.rotationYAngle, transform.eulerAngles.z);
+            var lerpRotation = Vector3.Lerp(transform.eulerAngles, finalRotation, Time.deltaTime * speed);
+            transform.eulerAngles = lerpRotation;
         }
     }
 }

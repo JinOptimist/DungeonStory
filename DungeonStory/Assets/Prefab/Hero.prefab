@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveAnimationSpeed: 2
+  rotationYAngle: 0
 --- !u!1 &5643512756312708792
 GameObject:
   m_ObjectHideFlags: 0

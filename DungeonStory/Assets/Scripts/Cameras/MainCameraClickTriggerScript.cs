@@ -20,7 +20,7 @@ public class MainCameraClickTriggerScript : MonoBehaviour
 
         var gameObject = hit.collider?.gameObject;
         var newHoverCell = gameObject?.GetComponentInParent<IHovered>();
-        //Check do we look at new cell and also wo we have old cell
+        // Check do we look at new cell and also wo we have old cell
         // Check "_oldHoveredObject != null" is nessary to be sure that we doesn't destroy old cell
         if (newHoverCell != null && _oldHoveredObject != null)
         {

@@ -687,8 +687,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d93b326fd63301499cf20130fbcfb7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetY: 3
-  offsetZ: -1.2
+  offsetUp: 3
+  offsetBack: -1.2
   speed: 1
 --- !u!1 &1067594887
 GameObject:
