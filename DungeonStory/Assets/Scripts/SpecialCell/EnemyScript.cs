@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.BaseCellInterfaces;
+﻿using Assets.Helpers;
+using Assets.Scripts.BaseCellInterfaces;
 using Assets.Scripts.SpecialCell;
 using Assets.Scripts.SpecialCell.AbilityStuff;
 using System;
@@ -6,8 +7,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMoveScript : MonoBehaviour, IHaveInforamtion, IFinalCell
+public class EnemyScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 {
+    public float moveAnimationSpeed;
+
     public string InfoText => "Это противник. Бей или беги";
 
     public List<Ability> Abilities { get; set; } = new List<Ability>();
@@ -21,6 +24,14 @@ public class EnemyMoveScript : MonoBehaviour, IHaveInforamtion, IFinalCell
            "Ударить",
            "Ударить",
            true));
+    }
+
+    private void Update()
+    {
+        var baseCell = GetComponentInChildren<BaseCellScript>();
+        var finalPosition = CoreObjectHelper.GetPositionByCoordinate(baseCell.X, baseCell.Z);
+        var lerp = Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * moveAnimationSpeed);
+        transform.position = lerp;
     }
 
     public void HitEnemy()

@@ -26,28 +26,28 @@ public class HeroMoveScript : MonoBehaviour
 
     public void KeyboardMoveAndRotation()
     {
-        var baseCell = GetComponentInChildren<BaseCellScript>();
-        var angelInRadian = rotationYAngle * Mathf.Deg2Rad;
-        if (Input.GetKeyUp(KeyCode.W))
-        {
-            baseCell.X += Mathf.RoundToInt(Mathf.Sin(angelInRadian));
-            baseCell.Z += Mathf.RoundToInt(Mathf.Cos(angelInRadian));
-        }
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            baseCell.X -= Mathf.RoundToInt(Mathf.Sin(angelInRadian));
-            baseCell.Z -= Mathf.RoundToInt(Mathf.Cos(angelInRadian));
-        }
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-            baseCell.X -= Mathf.RoundToInt(Mathf.Cos(angelInRadian));
-            baseCell.Z += Mathf.RoundToInt(Mathf.Sin(angelInRadian));
-        }
-        if (Input.GetKeyUp(KeyCode.D))
-        {
-            baseCell.X += Mathf.RoundToInt(Mathf.Cos(angelInRadian));
-            baseCell.Z -= Mathf.RoundToInt(Mathf.Sin(angelInRadian));
-        }
+        //var baseCell = GetComponentInChildren<BaseCellScript>();
+        //var angelInRadian = rotationYAngle * Mathf.Deg2Rad;
+        //if (Input.GetKeyUp(KeyCode.W))
+        //{
+        //    baseCell.X += Mathf.RoundToInt(Mathf.Sin(angelInRadian));
+        //    baseCell.Z += Mathf.RoundToInt(Mathf.Cos(angelInRadian));
+        //}
+        //if (Input.GetKeyUp(KeyCode.S))
+        //{
+        //    baseCell.X -= Mathf.RoundToInt(Mathf.Sin(angelInRadian));
+        //    baseCell.Z -= Mathf.RoundToInt(Mathf.Cos(angelInRadian));
+        //}
+        //if (Input.GetKeyUp(KeyCode.A))
+        //{
+        //    baseCell.X -= Mathf.RoundToInt(Mathf.Cos(angelInRadian));
+        //    baseCell.Z += Mathf.RoundToInt(Mathf.Sin(angelInRadian));
+        //}
+        //if (Input.GetKeyUp(KeyCode.D))
+        //{
+        //    baseCell.X += Mathf.RoundToInt(Mathf.Cos(angelInRadian));
+        //    baseCell.Z -= Mathf.RoundToInt(Mathf.Sin(angelInRadian));
+        //}
 
         if (Input.GetKeyUp(KeyCode.Q))
         {

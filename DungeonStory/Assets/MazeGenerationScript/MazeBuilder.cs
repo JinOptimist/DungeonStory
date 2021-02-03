@@ -1,4 +1,5 @@
-﻿using Assets.Maze.Cell;
+﻿using Assets.Helpers;
+using Assets.Maze.Cell;
 using Assets.MazeGenerationScript.Cell;
 using System;
 using System.Collections.Generic;
@@ -45,13 +46,25 @@ namespace Assets.Maze
             return _maze;
         }
 
+        /// <summary>
+        /// Run only after generate Player
+        /// </summary>
+        /// <param name="countOfEnemies"></param>
         private void GenerateEnemies(int countOfEnemies)
         {
             _maze.Enemies = new List<Enemy>();
-            var grounds = _maze.Cells.OfType<Ground>().ToList();
+            var grounds = _maze.Cells
+                .OfType<Ground>()
+                .Where(x => x.X != _maze.Player.X || x.Z != _maze.Player.Z)
+                .ToList();
+            if (countOfEnemies > grounds.Count)
+            {
+                countOfEnemies = grounds.Count;
+            }
+
             for (int i = 0; i < countOfEnemies; i++)
             {
-                var ground = GetRandom(grounds);
+                var ground = grounds.GetRandom();
                 var enemy = new Enemy(ground.X, ground.Z, _maze);
                 grounds.Remove(ground as Ground);
                 _maze.Enemies.Add(enemy);
@@ -62,7 +75,7 @@ namespace Assets.Maze
         {
             var stairs = _maze.Cells.Single(c => c.X == enterStairsX && c.Z == enterStairsZ);
             var nearCells = GetNearCells<BaseCell>(stairs).Where(x => !(x is Wall));
-            var randomGround = GetRandom(nearCells);
+            var randomGround = nearCells.GetRandom();
             if (randomGround == null)
             {
                 Debug.LogError("There is no ground near stairs");
@@ -102,7 +115,7 @@ namespace Assets.Maze
                     .Where(wall => GetNearCells<Ground>(wall).Count() <= 1)
                     .ToList();
 
-                keyCell = GetRandom(greenWall);
+                keyCell = greenWall.GetRandom();
             } while (greenWall.Any());
         }
 
@@ -129,16 +142,16 @@ namespace Assets.Maze
                 .ToList();
         }
 
-        private ICell GetRandom(IEnumerable<ICell> cells)
-        {
-            if (!cells.Any())
-            {
-                return null;
-            }
+        //private ICell GetRandom(IEnumerable<ICell> cells)
+        //{
+        //    if (!cells.Any())
+        //    {
+        //        return null;
+        //    }
 
-            var index = _random.Next(cells.Count());
-            return cells.ToList()[index];
-        }
+        //    var index = _random.Next(cells.Count());
+        //    return cells.ToList()[index];
+        //}
 
         private void GenerateWell(int maxCountOfWell)
         {
@@ -147,7 +160,7 @@ namespace Assets.Maze
 
             for (int i = 0; i < Math.Min(maxCountOfWell, groundDeadEnd.Count()); i++)
             {
-                var cell = GetRandom(groundDeadEnd);
+                var cell = groundDeadEnd.GetRandom();
                 var xWell = cell.X;
                 var yWell = cell.Z;
                 var well = new Fountain(xWell, yWell, _maze);

@@ -16,14 +16,14 @@ public class MazeGeneratorLogicScript : MonoBehaviour
     public int heigth;
     public double cointChance;
     public int fontaineCount;
+    public int countOfEnemies;
 
     public float blockSize;
 
-    // Start is called before the first frame update
-    void Start()
+    public void GenerateMaze()
     {
         var mazeBuilder = new MazeBuilder();
-        var maze = mazeBuilder.Generate(width, heigth, enterStairsX, enterStairsZ, cointChance, fontaineCount);
+        var maze = mazeBuilder.Generate(width, heigth, enterStairsX, enterStairsZ, cointChance, fontaineCount, countOfEnemies);
         DrawMaze(maze);
     }
     
@@ -42,7 +42,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
                 gameObject = Instantiate(mainController.coinTemplate);
             }
 
-            if (cell is Ground || cell is Player || cell is Enemy)
+            if (cell is Ground)//|| cell is Player || cell is Enemy
             {
                 gameObject = Instantiate(mainController.groundTemplate);
             }
@@ -53,14 +53,19 @@ public class MazeGeneratorLogicScript : MonoBehaviour
             }
 
             CoreObjectHelper.MoveCellToPosition(gameObject, cell.X, cell.Z);
+            
+            mainController.Landscape.Add(gameObject);
         }
 
         var player = maze.Player;
         CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.heroTemplate), player.X, player.Z);
 
-        maze.Enemies.ForEach(enemy =>
-            CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.enemyTemplate), enemy.X, enemy.Z)
-        );
+        foreach (var enemy in maze.Enemies)
+        {
+            var enemyGameObject = Instantiate(mainController.enemyTemplate);
+            CoreObjectHelper.MoveCellToPosition(enemyGameObject, enemy.X, enemy.Z);
+            mainController.Enemies.Add(enemyGameObject);
+        }
 
         //Draw border wall
         for (int i = -1; i < width + 1; i++)

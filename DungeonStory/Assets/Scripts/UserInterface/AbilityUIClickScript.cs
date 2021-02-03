@@ -13,7 +13,7 @@ public class AbilityUIClickScript : MonoBehaviour, IPointerClickHandler
     {
         if (Ability.Abailable)
         {
-            Ability.Action();
+            Ability.RunAction();
         }
     }
 }

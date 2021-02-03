@@ -17,6 +17,15 @@ public class MainController : MonoBehaviour
     public GameObject heroTemplate;
     public GameObject groundTemplate;
     public GameObject fountainTemplate;
+
+    public void EndTurn()
+    {
+        foreach (var enemyGameObject in Enemies)
+        {
+            enemyGameObject.GetComponent<AiEndTurnScript>()?.EndTurn();
+        }
+    }
+
     public GameObject enemyTemplate;
 
     //Prefab for UI
@@ -29,12 +38,15 @@ public class MainController : MonoBehaviour
     public GameObject UIInfoBlockText { get; private set; }
     public GameObject CellActionGroup { get; private set; }
 
+    public List<GameObject> Enemies { get; private set; } = new List<GameObject>();
+    public List<GameObject> Landscape { get; private set; } = new List<GameObject>();
+
     //UI
     public const string UIInfoBlockMainName = "UIInfoBlockMain";
     public const string UIInfoBlockTextName = "UIInfoBlockText";
     public const string UIInfoCellTextName = "UIInfoCellText";
     public const string CellActionGroupName = "CellActionGroup";
-    
+
     //Animation
     public const string IsCubeActive = "IsActive";
 
@@ -48,6 +60,8 @@ public class MainController : MonoBehaviour
 
         UIInfoBlockMain.SetActive(false);
         UIInfoBlockText.SetActive(false);
+
+        CoreObjectHelper.GetMazeGenerator().GenerateMaze();
     }
 
     public void ActivateGameObject(GameObject gameObject)
@@ -104,7 +118,7 @@ public class MainController : MonoBehaviour
             uiAbility.GetComponent<AbilityUIClickScript>().Ability = ability;
 
             uiAbility.GetComponentInChildren<Text>().text = ability.Name;
-            
+
             if (!ability.Abailable)
             {
                 uiAbility.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f);
@@ -114,6 +128,8 @@ public class MainController : MonoBehaviour
 
     public GameObject ReplaceToGround(GameObject gameObject)
     {
+        Landscape.Remove(gameObject);
+
         var baseCell = gameObject.GetComponentInChildren<BaseCellScript>();
 
         var finalCell = ((MonoBehaviour)gameObject.GetComponentInParent<IFinalCell>()).gameObject;
@@ -121,6 +137,9 @@ public class MainController : MonoBehaviour
 
         var ground = Instantiate(groundTemplate);
         CoreObjectHelper.MoveCellToPosition(ground, baseCell.X, baseCell.Z);
+        
+        Landscape.Add(ground);
+
         return ground;
     }
 
@@ -148,6 +167,6 @@ public class MainController : MonoBehaviour
     {
         ActivateGameObject(gameObject);
         var finalCell = gameObject.GetComponentInParent<IFinalCell>();
-        finalCell?.DefaultAbility?.Action();
+        finalCell?.DefaultAbility?.RunAction();
     }
 }
