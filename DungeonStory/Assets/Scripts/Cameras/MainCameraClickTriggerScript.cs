@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MainCameraClickTriggerScript : MonoBehaviour
 {
-    private IHovered _oldHoveredObject;
+    private GameObject _oldHoveredObject;
     
     // Update is called once per frame
     void Update()
@@ -19,6 +19,14 @@ public class MainCameraClickTriggerScript : MonoBehaviour
         }
 
         var gameObject = hit.collider?.gameObject;
+        var newHoverCell = gameObject?.GetComponentInParent<IHovered>();
+        //Check do we look at new cell and also wo we have old cell
+        // Check "_oldHoveredObject != null" is nessary to be sure that we doesn't destroy old cell
+        if (newHoverCell != null && _oldHoveredObject != null)
+        {
+            _oldHoveredObject?.GetComponentInParent<IHovered>()?.OnMouseOut();
+        }
+        
         //Left mouse
         if (Input.GetMouseButtonDown(0))
         {
@@ -40,16 +48,11 @@ public class MainCameraClickTriggerScript : MonoBehaviour
             }
         }
 
-        var newHoverCell = gameObject?.GetComponentInParent<IHovered>();
         if (newHoverCell != null)
         {
-            if (_oldHoveredObject != null)
-            {
-                _oldHoveredObject.OnMouseOut();
-            }
-
-            _oldHoveredObject = newHoverCell;
-            _oldHoveredObject.OnMouseIn();
+            newHoverCell.OnMouseIn();
+            _oldHoveredObject = gameObject;
         }
+        
     }
 }

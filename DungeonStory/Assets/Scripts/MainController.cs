@@ -25,6 +25,7 @@ public class MainController : MonoBehaviour
     //UI
     public GameObject UIInfoBlockMain { get; private set; }
     public GameObject UIInfoCellText { get; private set; }
+
     public GameObject UIInfoBlockText { get; private set; }
     public GameObject CellActionGroup { get; private set; }
 
@@ -33,6 +34,7 @@ public class MainController : MonoBehaviour
     public const string UIInfoBlockTextName = "UIInfoBlockText";
     public const string UIInfoCellTextName = "UIInfoCellText";
     public const string CellActionGroupName = "CellActionGroup";
+    
     //Animation
     public const string IsCubeActive = "IsActive";
 
@@ -140,5 +142,12 @@ public class MainController : MonoBehaviour
 
         UIInfoBlockMain.SetActive(true);
         UIInfoCellText.GetComponent<Text>().text = infoText;
+    }
+
+    public void DefaultAction(GameObject gameObject)
+    {
+        ActivateGameObject(gameObject);
+        var finalCell = gameObject.GetComponentInParent<IFinalCell>();
+        finalCell?.DefaultAbility?.Action();
     }
 }

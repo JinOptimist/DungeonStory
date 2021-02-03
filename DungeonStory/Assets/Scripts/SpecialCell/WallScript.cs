@@ -12,6 +12,8 @@ public class WallScript : MonoBehaviour, IHaveInforamtion, IFinalCell
     public string InfoText => "Это стена. Её можно сломать. Но это долго";
 
     public List<Ability> Abilities { get; set; } = new List<Ability>();
+    
+    public Ability DefaultAbility { get; set; }
 
     public void Awake()
     {
@@ -35,6 +37,6 @@ public class WallScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public void BreakWall()
     {
-        Debug.Log("We hit the wall");
+        Debug.Log("We BreakWall the wall");
     }
 }

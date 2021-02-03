@@ -12,6 +12,8 @@ public class EnemyMoveScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public List<Ability> Abilities { get; set; } = new List<Ability>();
 
+    public Ability DefaultAbility { get; set; }
+
     public void Awake()
     {
         Abilities.Add(new Ability(
@@ -23,6 +25,6 @@ public class EnemyMoveScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public void HitEnemy()
     {
-        Debug.Log("We hit Enemy");
+        Debug.Log("Enemy was hitted");
     }
 }

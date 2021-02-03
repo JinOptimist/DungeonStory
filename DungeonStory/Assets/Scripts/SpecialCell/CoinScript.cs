@@ -11,14 +11,20 @@ public class CoinScript : MonoBehaviour, IHaveInforamtion, IFinalCell
     public string InfoText => "Это монетка. Её можно подобрать";
 
     public List<Ability> Abilities { get; set; } = new List<Ability>();
+    public Ability DefaultAbility { get; set; }
 
     public void Awake()
     {
-        Abilities.Add(new Ability(
+        var grabAbility = new Ability(
             new Action(GrabCoin),
             "Схватить",
             "Схватить",
-            true));
+            true);
+        
+        DefaultAbility = grabAbility;
+
+        Abilities.Add(grabAbility);
+        
 
         Abilities.Add(new Ability(
             new Action(KickCoin),

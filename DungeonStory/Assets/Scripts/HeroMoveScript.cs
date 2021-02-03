@@ -6,6 +6,7 @@ using UnityEngine;
 public class HeroMoveScript : MonoBehaviour
 {
     public float moveAnimationSpeed;
+    
     // Update is called once per frame
     void Update()
     {

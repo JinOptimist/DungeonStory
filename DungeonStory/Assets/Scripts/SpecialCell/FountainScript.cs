@@ -12,6 +12,8 @@ public class FountainScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public List<Ability> Abilities { get; set; } = new List<Ability>();
 
+    public Ability DefaultAbility { get; set; }
+
     public void Awake()
     {
         Abilities.Add(new Ability(

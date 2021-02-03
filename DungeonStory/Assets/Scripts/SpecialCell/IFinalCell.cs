@@ -12,6 +12,11 @@ namespace Assets.Scripts.SpecialCell
     /// </summary>
     public interface IFinalCell
     {
+        /// <summary>
+        /// The ability was trigger when a character moves to the current cell
+        /// </summary>
+        Ability DefaultAbility { get; set; }
+
         List<Ability> Abilities { get; set; }
     }
 }

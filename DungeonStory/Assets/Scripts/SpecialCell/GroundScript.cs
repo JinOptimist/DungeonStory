@@ -13,13 +13,19 @@ public class GroundScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public List<Ability> Abilities { get; set; } = new List<Ability>();
 
+    public Ability DefaultAbility { get; set; }
+
     public void Awake()
     {
-        Abilities.Add(new Ability(
+        var stepAbility = new Ability(
            new Action(StepToGround),
            "Шагнуть",
            "Шагнуть",
-           true));
+           true);
+        
+        DefaultAbility = stepAbility;
+        
+        Abilities.Add(stepAbility);
     }
 
     public void StepToGround()

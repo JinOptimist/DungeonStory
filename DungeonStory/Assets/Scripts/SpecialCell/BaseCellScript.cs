@@ -13,7 +13,6 @@ public class BaseCellScript : MonoBehaviour, IHovered, IClicked
 
     public void OnMouseIn()
     {
-        Debug.Log($"H: [{X}, {Z}]");
         gameObject.GetComponentInParent<Animator>().SetBool(IsHover, true);
     }
 
@@ -29,6 +28,6 @@ public class BaseCellScript : MonoBehaviour, IHovered, IClicked
 
     public void OnRightMouseClick()
     {
-        CoreObjectHelper.GetMainController().MoveHeroToCell(gameObject);
+        CoreObjectHelper.GetMainController().DefaultAction(gameObject);//MoveHeroToCell(gameObject);
     }
 }
