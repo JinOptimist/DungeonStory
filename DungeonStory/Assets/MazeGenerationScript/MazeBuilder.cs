@@ -35,7 +35,9 @@ namespace Assets.Maze
 
             GenerateGround(enterStairsX, enterStairsZ);
 
-            GenerateWell(maxCountOfFontaine);
+            GenerateStairs(enterStairsX, enterStairsZ);
+
+            GenerateFountain(maxCountOfFontaine);
 
             GenerateCoins(chanceOfCoin);
 
@@ -44,6 +46,17 @@ namespace Assets.Maze
             GenerateEnemies(countOfEnemies);
 
             return _maze;
+        }
+
+        private void GenerateStairs(int enterStairsX, int enterStairsZ)
+        {
+            var stairToUp = new StairToUp(enterStairsX, enterStairsZ, _maze);
+            _maze.ReplaceCell(stairToUp);
+            
+            var randomGroundDeadEnd = GetDeadEnd().GetRandom();
+
+            var stairToDown = new StairToDown(randomGroundDeadEnd.X, randomGroundDeadEnd.Z, _maze);
+            _maze.ReplaceCell(stairToDown);
         }
 
         /// <summary>
@@ -73,18 +86,21 @@ namespace Assets.Maze
 
         private void GeneratePlayer(int enterStairsX, int enterStairsZ)
         {
-            var stairs = _maze.Cells.Single(c => c.X == enterStairsX && c.Z == enterStairsZ);
-            var nearCells = GetNearCells<BaseCell>(stairs)
-                .Where(x => !(x is Wall))
-                .GetRandom();
-            var randomGround = nearCells;
-            if (randomGround == null)
-            {
-                Debug.LogError("There is no ground near stairs");
-                Debug.LogError($"Stairs [{stairs.X},{stairs.Z}]");
-            }
-            var player = new Player(randomGround.X, randomGround.Z, _maze);
-            _maze.Player = player;
+            //var stairs = _maze.Cells.Single(c => c.X == enterStairsX && c.Z == enterStairsZ);
+            //var nearCells = GetNearCells<BaseCell>(stairs)
+            //    .Where(x => !(x is Wall))
+            //    .GetRandom();
+            //var randomGround = nearCells;
+            //if (randomGround == null)
+            //{
+            //    Debug.LogError("There is no ground near stairs");
+            //    Debug.LogError($"Stairs [{stairs.X},{stairs.Z}]");
+            //}
+
+            //var player = new Player(randomGround.X, randomGround.Z, _maze);
+            //_maze.Player = player;
+
+            _maze.Player = new Player(enterStairsX, enterStairsZ, _maze);
         }
 
         private void GenerateWall()
@@ -155,10 +171,9 @@ namespace Assets.Maze
         //    return cells.ToList()[index];
         //}
 
-        private void GenerateWell(int maxCountOfWell)
+        private void GenerateFountain(int maxCountOfWell)
         {
-            var groundDeadEnd = _maze.Cells.OfType<Ground>()
-                .Where(x => GetNearCells<Wall>(x).Count() == 3);
+            var groundDeadEnd = GetDeadEnd();
 
             for (int i = 0; i < Math.Min(maxCountOfWell, groundDeadEnd.Count()); i++)
             {
@@ -168,6 +183,13 @@ namespace Assets.Maze
                 var well = new Fountain(xWell, yWell, _maze);
                 _maze.ReplaceCell(well);
             }
+        }
+
+        private IEnumerable<Ground> GetDeadEnd()
+        {
+            return _maze.Cells.OfType<Ground>()
+                .Where(x =>
+                    GetNearCells<BaseCell>(x).Count() - GetNearCells<Wall>(x).Count() == 1);
         }
     }
 }

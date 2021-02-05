@@ -13,15 +13,21 @@ namespace Assets.Helpers
         public const string MainControllerTag = "MainController";
         public const string MainHeroTag = "MainHero";
         public const string MazeGeneratorName = "MazeGenerator";
-        
 
         public const int blockSize = 1;
 
+        private static MainController _mainController;
+
         public static MainController GetMainController()
         {
-            return GameObject
-                .FindGameObjectWithTag(MainControllerTag)
-                .GetComponent<MainController>();
+            if (_mainController == null)
+            {
+                _mainController = GameObject
+                    .FindGameObjectWithTag(MainControllerTag)
+                    .GetComponent<MainController>();
+            }
+
+            return _mainController;
         }
 
         public static MazeGeneratorLogicScript GetMazeGenerator()

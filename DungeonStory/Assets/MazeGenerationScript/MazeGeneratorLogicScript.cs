@@ -20,13 +20,21 @@ public class MazeGeneratorLogicScript : MonoBehaviour
 
     public float blockSize;
 
+    //int width, int heigth, int enterStairsX, int enterStairsZ, double cointChance, int fontaineCount, int countOfEnemies
     public void GenerateMaze()
     {
         var mazeBuilder = new MazeBuilder();
-        var maze = mazeBuilder.Generate(width, heigth, enterStairsX, enterStairsZ, cointChance, fontaineCount, countOfEnemies);
+        var maze = mazeBuilder.Generate(
+            width, 
+            heigth, 
+            enterStairsX, 
+            enterStairsZ, 
+            cointChance, 
+            fontaineCount, 
+            countOfEnemies);
         DrawMaze(maze);
     }
-    
+
     private void DrawMaze(MazeLevelBusinessObject maze)
     {
         var mainController = CoreObjectHelper.GetMainController();
@@ -37,12 +45,13 @@ public class MazeGeneratorLogicScript : MonoBehaviour
             {
                 gameObject = Instantiate(mainController.wallBrickTemplate);
             }
+
             if (cell is Coin)
             {
                 gameObject = Instantiate(mainController.coinTemplate);
             }
 
-            if (cell is Ground)//|| cell is Player || cell is Enemy
+            if (cell is Ground)
             {
                 gameObject = Instantiate(mainController.groundTemplate);
             }
@@ -52,13 +61,22 @@ public class MazeGeneratorLogicScript : MonoBehaviour
                 gameObject = Instantiate(mainController.fountainTemplate);
             }
 
+            if (cell is StairToUp)
+            {
+                gameObject = Instantiate(mainController.stairsUpTemplate);
+            }
+
+            if (cell is StairToDown)
+            {
+                gameObject = Instantiate(mainController.stairsDownTemplate);
+            }
+
             CoreObjectHelper.MoveCellToPosition(gameObject, cell.X, cell.Z);
-            
+
             mainController.Landscape.Add(gameObject);
         }
 
-        var player = maze.Player;
-        CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.heroTemplate), player.X, player.Z);
+        mainController.MoveHeroToCell(maze.Player.X, maze.Player.Z);
 
         foreach (var enemy in maze.Enemies)
         {
@@ -70,16 +88,22 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         //Draw border wall
         for (int i = -1; i < width + 1; i++)
         {
-            CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.wallBrickTemplate), i, -1);
-            CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.wallBrickTemplate), i, heigth);
+            AddBorderWall(i, -1);
+            AddBorderWall(i, heigth);
         }
 
         for (int i = 0; i < heigth; i++)
         {
-            CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.wallBrickTemplate), -1, i);
-            CoreObjectHelper.MoveCellToPosition(Instantiate(mainController.wallBrickTemplate), width, i);
+            AddBorderWall(-1, i);
+            AddBorderWall(width, i);
         }
     }
 
-
+    private void AddBorderWall(int x, int z)
+    {
+        var mainController = CoreObjectHelper.GetMainController();
+        var borderWall = Instantiate(mainController.wallBrickTemplate);
+        mainController.BorderWall.Add(borderWall);
+        CoreObjectHelper.MoveCellToPosition(borderWall, x, z);
+    }
 }

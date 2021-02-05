@@ -28,6 +28,6 @@ public class BaseCellScript : MonoBehaviour, IHovered, IClicked
 
     public void OnRightMouseClick()
     {
-        CoreObjectHelper.GetMainController().DefaultAction(gameObject);//MoveHeroToCell(gameObject);
+        CoreObjectHelper.GetMainController().DefaultAction(gameObject);
     }
 }

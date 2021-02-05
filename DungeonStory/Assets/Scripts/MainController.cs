@@ -18,6 +18,8 @@ public class MainController : MonoBehaviour
     public GameObject heroTemplate;
     public GameObject groundTemplate;
     public GameObject fountainTemplate;
+    public GameObject stairsUpTemplate;
+    public GameObject stairsDownTemplate;
 
     public void EndTurn()
     {
@@ -34,6 +36,7 @@ public class MainController : MonoBehaviour
 
     //UI
     public GameObject UIInfoBlockMain { get; private set; }
+
     public GameObject UIInfoCellText { get; private set; }
 
     public GameObject UIInfoBlockText { get; private set; }
@@ -41,6 +44,8 @@ public class MainController : MonoBehaviour
 
     public List<GameObject> Enemies { get; private set; } = new List<GameObject>();
     public List<GameObject> Landscape { get; private set; } = new List<GameObject>();
+
+    public List<GameObject> BorderWall { get; private set; } = new List<GameObject>();
 
     //UI
     public const string UIInfoBlockMainName = "UIInfoBlockMain";
@@ -98,6 +103,30 @@ public class MainController : MonoBehaviour
         }
     }
 
+    public void GenerateMaze(GameObject stairDown)
+    {
+        var cell = stairDown.GetComponentInChildren<BaseCellScript>();
+        
+        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
+        mazeGenerator.enterStairsX = cell.X;
+        mazeGenerator.enterStairsZ = cell.Z;
+        mazeGenerator.width++;
+        mazeGenerator.heigth++;
+
+        Enemies.ForEach(Destroy);
+        Enemies = new List<GameObject>();
+
+        Landscape.ForEach(Destroy);
+        Landscape = new List<GameObject>();
+
+        BorderWall.ForEach(Destroy);
+        BorderWall = new List<GameObject>(); 
+
+        ActiveObject = null;
+
+        mazeGenerator.GenerateMaze();
+    }
+
     private void RunActiveAnimation(GameObject gameObject)
     {
         ActiveObject
@@ -150,12 +179,17 @@ public class MainController : MonoBehaviour
         return ground;
     }
 
-    public void MoveHeroToCell(GameObject gameObject)
+    public void MoveHeroToCell()
+    {
+        var cell = ActiveObject.GetComponentInChildren<BaseCellScript>();
+        MoveHeroToCell(cell.X, cell.Z);
+    }
+
+    public void MoveHeroToCell(int x, int z)
     {
         var hero = CoreObjectHelper.GetHeroGameObject();
-        var cell = gameObject.GetComponentInChildren<BaseCellScript>();
-        hero.GetComponent<BaseCellScript>().X = cell.X;
-        hero.GetComponent<BaseCellScript>().Z = cell.Z;
+        hero.GetComponent<BaseCellScript>().X = x;
+        hero.GetComponent<BaseCellScript>().Z = z;
     }
 
     public void SetInfoText(string infoText)
@@ -173,8 +207,10 @@ public class MainController : MonoBehaviour
     public void DefaultAction(GameObject gameObject)
     {
         ActivateGameObject(gameObject);
-        var finalCell = gameObject.GetComponentInParent<IFinalCell>();
-        finalCell?.DefaultAbility?.RunAction();
+        ActiveObject
+            .GetComponentInParent<IFinalCell>()
+            ?.DefaultAbility
+            ?.RunAction();
     }
 
     public void KillEnemy(GameObject enemy)

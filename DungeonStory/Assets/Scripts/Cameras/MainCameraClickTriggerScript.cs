@@ -37,6 +37,7 @@ public class MainCameraClickTriggerScript : MonoBehaviour
                 iTriggerClick[0]?.OnLeftMouseClick();
             }
         }
+        
         //Right mouse
         if (Input.GetMouseButtonDown(1))
         {
@@ -53,6 +54,5 @@ public class MainCameraClickTriggerScript : MonoBehaviour
             newHoverCell.OnMouseIn();
             _oldHoveredObject = gameObject;
         }
-        
     }
 }
