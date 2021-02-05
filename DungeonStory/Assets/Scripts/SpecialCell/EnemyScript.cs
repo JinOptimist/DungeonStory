@@ -10,6 +10,7 @@ using UnityEngine;
 public class EnemyScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 {
     public float moveAnimationSpeed;
+    public int hp;
 
     public string InfoText => "Это противник. Бей или беги";
 
@@ -19,11 +20,15 @@ public class EnemyScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public void Awake()
     {
-        Abilities.Add(new Ability(
+        var hit = new Ability(
            new Action(HitEnemy),
            "Ударить",
            "Ударить",
-           true));
+           true);
+
+        DefaultAbility = hit;
+
+        Abilities.Add(hit);
     }
 
     private void Update()
@@ -36,6 +41,14 @@ public class EnemyScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public void HitEnemy()
     {
-        Debug.Log("Enemy was hitted");
+        hp--;
+        if (hp <= 0)
+        {
+            CoreObjectHelper.GetMainController().KillEnemy(gameObject);
+            return;
+        }
+
+        var hpBar = gameObject.transform.Find("HpBar");
+        hpBar.transform.localScale = new Vector3(0.1f, 0.1f * hp, 0.1f);
     }
 }

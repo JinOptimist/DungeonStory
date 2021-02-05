@@ -721,11 +721,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enterStairsX: 1
   enterStairsZ: 1
-  width: 10
-  heigth: 10
+  width: 4
+  heigth: 4
   cointChance: 0.03
   fontaineCount: 3
-  countOfEnemies: 20
+  countOfEnemies: 5
   blockSize: 1
 --- !u!4 &1067594889
 Transform:

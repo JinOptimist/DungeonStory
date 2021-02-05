@@ -3,6 +3,7 @@ using Assets.Scripts.BaseCellInterfaces;
 using Assets.Scripts.SpecialCell;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
@@ -73,8 +74,14 @@ public class MainController : MonoBehaviour
                 .SetBool(IsCubeActive, false);
         }
 
-        var finalCell = gameObject.GetComponentInParent<IFinalCell>();
+        var activeEnemy = GetEnemyByGround(gameObject);
+
+        var finalCell = activeEnemy != null 
+            ? activeEnemy.GetComponentInParent<IFinalCell>()
+            : gameObject.GetComponentInParent<IFinalCell>();
+
         ActiveObject = ((MonoBehaviour)finalCell).gameObject;
+
         RunActiveAnimation(ActiveObject);
 
         ShowAbilityForActivecell(finalCell);
@@ -137,7 +144,7 @@ public class MainController : MonoBehaviour
 
         var ground = Instantiate(groundTemplate);
         CoreObjectHelper.MoveCellToPosition(ground, baseCell.X, baseCell.Z);
-        
+
         Landscape.Add(ground);
 
         return ground;
@@ -168,5 +175,37 @@ public class MainController : MonoBehaviour
         ActivateGameObject(gameObject);
         var finalCell = gameObject.GetComponentInParent<IFinalCell>();
         finalCell?.DefaultAbility?.RunAction();
+    }
+
+    public void KillEnemy(GameObject enemy)
+    {
+        Enemies.Remove(enemy);
+        var ground = GetGroundByEnemy(enemy);
+        ActivateGameObject(ground);
+        Destroy(enemy);
+    }
+
+    public GameObject GetEnemyByGround(GameObject ground)
+    {
+        return GetEnemyByGround(ground.GetComponentInChildren<BaseCellScript>());
+    }
+
+    public GameObject GetEnemyByGround(BaseCellScript cell)
+    {
+        return GetCell(Enemies, cell);
+    }
+
+    public GameObject GetGroundByEnemy(GameObject enemy)
+    {
+        return GetCell(Landscape, enemy.GetComponentInChildren<BaseCellScript>());
+    }
+
+    private GameObject GetCell(List<GameObject> gameObjects, BaseCellScript cell)
+    {
+        return gameObjects.FirstOrDefault(gameObj =>
+        {
+            var gameObjCell = gameObj.GetComponentInChildren<BaseCellScript>();
+            return gameObjCell.X == cell.X && gameObjCell.Z == cell.Z;
+        });
     }
 }

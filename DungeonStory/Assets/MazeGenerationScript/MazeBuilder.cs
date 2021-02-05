@@ -74,8 +74,10 @@ namespace Assets.Maze
         private void GeneratePlayer(int enterStairsX, int enterStairsZ)
         {
             var stairs = _maze.Cells.Single(c => c.X == enterStairsX && c.Z == enterStairsZ);
-            var nearCells = GetNearCells<BaseCell>(stairs).Where(x => !(x is Wall));
-            var randomGround = nearCells.GetRandom();
+            var nearCells = GetNearCells<BaseCell>(stairs)
+                .Where(x => !(x is Wall))
+                .GetRandom();
+            var randomGround = nearCells;
             if (randomGround == null)
             {
                 Debug.LogError("There is no ground near stairs");
