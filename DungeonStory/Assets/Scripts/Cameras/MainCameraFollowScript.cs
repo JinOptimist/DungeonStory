@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Helpers;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,15 +27,6 @@ public class MainCameraFollowScript : MonoBehaviour
 
     void LateUpdate()
     {
-        //if (transform.eulerAngles.y < 360)
-        //{
-        //    transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + 360, transform.eulerAngles.z);
-        //}
-        //if (transform.eulerAngles.y > 720)
-        //{
-        //    transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y - 360, transform.eulerAngles.z);
-        //}
-
         var player = GameObject.FindGameObjectWithTag("MainHero");
         if (player != null)
         {
@@ -47,18 +39,7 @@ public class MainCameraFollowScript : MonoBehaviour
             var lerp = Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * speed);
             transform.position = lerp;
 
-            //if (h.rotationYAngle < 0)
-            //{
-            //    h.rotationYAngle += 360;
-            //    //transform.eulerAngles = new Vector3(
-            //    //    transform.eulerAngles.x, 
-            //    //    transform.eulerAngles.y + 360, 
-            //    //    transform.eulerAngles.z);
-            //}
-
-            var finalRotation = new Vector3(transform.eulerAngles.x, h.rotationYAngle, transform.eulerAngles.z);
-            var lerpRotation = Vector3.Lerp(transform.eulerAngles, finalRotation, Time.deltaTime * speed);
-            transform.eulerAngles = lerpRotation;
+            SmoothMoveHelper.SmartRotationY(transform, h.rotationYAngle, speed);
         }
     }
 }

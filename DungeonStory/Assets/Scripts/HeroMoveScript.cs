@@ -19,9 +19,7 @@ public class HeroMoveScript : MonoBehaviour
         var lerp = Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * moveAnimationSpeed);
         transform.position = lerp;
 
-        var finalRotation = new Vector3(transform.eulerAngles.x, rotationYAngle, transform.eulerAngles.z);
-        var lerpRotation = Vector3.Lerp(transform.eulerAngles, finalRotation, Time.deltaTime * moveAnimationSpeed);
-        transform.eulerAngles = lerpRotation;
+        SmoothMoveHelper.SmartRotationY(transform, rotationYAngle, moveAnimationSpeed, true);
     }
 
     public void KeyboardMoveAndRotation()
@@ -65,8 +63,6 @@ public class HeroMoveScript : MonoBehaviour
             {
                 rotationYAngle += 360;
             }
-
-            Debug.Log($"rotationYAngle = {rotationYAngle}");
         }
     }
 }

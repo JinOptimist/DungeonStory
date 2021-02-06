@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class StairDownScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 {
+    public int heightOfDrop;
     public string InfoText => "Лестница вниз. Путь в глубину подземелья";
 
     public List<Ability> Abilities { get; set; } = new List<Ability>();
@@ -35,7 +36,12 @@ public class StairDownScript : MonoBehaviour, IHaveInforamtion, IFinalCell
     public void GoDown()
     {
         var hero = CoreObjectHelper.GetHeroGameObject();
-        hero.transform.position = new Vector3(hero.transform.position.x, 10, hero.transform.position.z);
+        hero.transform.position = new Vector3(hero.transform.position.x, heightOfDrop, hero.transform.position.z);
+
+        var cameraPosition = Camera.main.transform.position;
+        Camera.main.transform.position = new Vector3(cameraPosition.x, cameraPosition.y + heightOfDrop, cameraPosition.z);
+
+        hero.transform.position = new Vector3(hero.transform.position.x, heightOfDrop, hero.transform.position.z);
 
         CoreObjectHelper.GetMainController().GenerateMaze(gameObject);
     }

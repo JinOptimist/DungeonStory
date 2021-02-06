@@ -542,6 +542,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5643512756312708792, guid: 9a270f9b79bc1594d817ffc1cdc300bf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a270f9b79bc1594d817ffc1cdc300bf, type: 3}
 --- !u!1 &841235016
@@ -765,7 +770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offsetUp: 3
-  offsetBack: -1.2
+  offsetBack: -3
   speed: 1
 --- !u!1 &1067594887
 GameObject:
