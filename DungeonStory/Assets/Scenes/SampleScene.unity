@@ -883,6 +883,8 @@ MonoBehaviour:
     type: 3}
   enemyTemplate: {fileID: 3101433043350361630, guid: 7abd90c1e5f78dd46a3e731e14f61874,
     type: 3}
+  towerTemplate: {fileID: 5120784289934174310, guid: c4c243e66a37c404e8cc62985f78f0ed,
+    type: 3}
   abilityTemplate: {fileID: 2185763264357669635, guid: d02afb5aba8324f4f974acc8a64706fe,
     type: 3}
 --- !u!4 &1347513427

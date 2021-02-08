@@ -24,9 +24,9 @@ public class WallScript : MonoBehaviour, IHaveInforamtion, IFinalCell
            true));
 
         Abilities.Add(new Ability(
-           new Action(BreakWall),
-           "Сломать",
-           "Сломать",
+           new Action(BuildTower),
+           "Создать Башню",
+           "Создать Башню",
            true));
     }
 
@@ -35,8 +35,11 @@ public class WallScript : MonoBehaviour, IHaveInforamtion, IFinalCell
         Debug.Log("We hit the wall");
     }
 
-    public void BreakWall()
+    public void BuildTower()
     {
-        Debug.Log("We BreakWall the wall");
+        var mainController = CoreObjectHelper.GetMainController();
+        var activeObject = mainController.ActiveObject;
+        var tower = mainController.ReplaceToTower(activeObject);
+        mainController.PickGameObject(tower);
     }
 }

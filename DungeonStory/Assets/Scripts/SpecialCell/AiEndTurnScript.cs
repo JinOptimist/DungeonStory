@@ -1,10 +1,11 @@
 ﻿using Assets.Helpers;
+using Assets.Scripts.SpecialCell.CellInterface;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class AiEndTurnScript : MonoBehaviour
+public class AiEndTurnScript : MonoBehaviour, IEndTurn
 {
     public void EndTurn()
     {

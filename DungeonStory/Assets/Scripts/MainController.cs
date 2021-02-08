@@ -2,6 +2,7 @@
 using Assets.Maze;
 using Assets.Scripts.BaseCellInterfaces;
 using Assets.Scripts.SpecialCell;
+using Assets.Scripts.SpecialCell.CellInterface;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ public class MainController : MonoBehaviour
     public GameObject stairsDownTemplate;
 
     public GameObject enemyTemplate;
+    public GameObject towerTemplate;
 
     //Prefab for UI
     public GameObject abilityTemplate;
@@ -74,6 +76,12 @@ public class MainController : MonoBehaviour
         {
             enemyGameObject.GetComponent<AiEndTurnScript>()?.EndTurn();
         }
+
+        Landscape
+            .Select(x => x.GetComponentInChildren<IEndTurn>())
+            .Where(x => x != null)
+            .ToList()
+            .ForEach(x => x.EndTurn());
     }
 
     public void PickGameObject(GameObject gameObject)
@@ -134,7 +142,7 @@ public class MainController : MonoBehaviour
 
         DrawCurrentMazeLevel();
     }
-    
+
     public void GoOneLevelUp()
     {
         SaveLevelChenges();
@@ -212,21 +220,32 @@ public class MainController : MonoBehaviour
         }
     }
 
-    public GameObject ReplaceToGround(GameObject gameObject)
+    public GameObject ReplaceToGround(GameObject from)
     {
-        Landscape.Remove(gameObject);
+        var ground = Instantiate(groundTemplate);
+        return ReplaceCell(from, ground);
+    }
 
-        var baseCell = gameObject.GetComponentInChildren<BaseCellScript>();
+    public GameObject ReplaceToTower(GameObject from)
+    {
+        var tower = Instantiate(towerTemplate);
+        return ReplaceCell(from, tower);
+    }
 
-        var finalCell = ((MonoBehaviour)gameObject.GetComponentInParent<IFinalCell>()).gameObject;
+    public GameObject ReplaceCell(GameObject from, GameObject to)
+    {
+        Landscape.Remove(from);
+
+        var baseCell = from.GetComponentInChildren<BaseCellScript>();
+
+        var finalCell = ((MonoBehaviour)from.GetComponentInParent<IFinalCell>()).gameObject;
         Destroy(finalCell);
 
-        var ground = Instantiate(groundTemplate);
-        CoreObjectHelper.MoveCellToPosition(ground, baseCell.X, baseCell.Z);
+        CoreObjectHelper.MoveCellToPosition(to, baseCell.X, baseCell.Z);
 
-        Landscape.Add(ground);
+        Landscape.Add(to);
 
-        return ground;
+        return to;
     }
 
     public void MoveHeroToCell()
