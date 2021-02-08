@@ -1,4 +1,5 @@
 ﻿using Assets.Helpers;
+using Assets.Maze;
 using Assets.Scripts.BaseCellInterfaces;
 using Assets.Scripts.SpecialCell;
 using System.Collections;
@@ -21,14 +22,6 @@ public class MainController : MonoBehaviour
     public GameObject stairsUpTemplate;
     public GameObject stairsDownTemplate;
 
-    public void EndTurn()
-    {
-        foreach (var enemyGameObject in Enemies)
-        {
-            enemyGameObject.GetComponent<AiEndTurnScript>()?.EndTurn();
-        }
-    }
-
     public GameObject enemyTemplate;
 
     //Prefab for UI
@@ -40,12 +33,16 @@ public class MainController : MonoBehaviour
     public GameObject UIInfoCellText { get; private set; }
 
     public GameObject UIInfoBlockText { get; private set; }
+
     public GameObject CellActionGroup { get; private set; }
 
     public List<GameObject> Enemies { get; private set; } = new List<GameObject>();
     public List<GameObject> Landscape { get; private set; } = new List<GameObject>();
 
     public List<GameObject> BorderWall { get; private set; } = new List<GameObject>();
+
+    private int _currentLevelIndex;
+    public List<MazeLevelBusinessObject> Levels { get; private set; } = new List<MazeLevelBusinessObject>();
 
     //UI
     public const string UIInfoBlockMainName = "UIInfoBlockMain";
@@ -67,11 +64,27 @@ public class MainController : MonoBehaviour
         UIInfoBlockMain.SetActive(false);
         UIInfoBlockText.SetActive(false);
 
-        CoreObjectHelper.GetMazeGenerator().GenerateMaze();
+        _currentLevelIndex = -1;
+        GoOneLevelDown(1, 1);
     }
 
-    public void ActivateGameObject(GameObject gameObject)
+    public void EndTurn()
     {
+        foreach (var enemyGameObject in Enemies)
+        {
+            enemyGameObject.GetComponent<AiEndTurnScript>()?.EndTurn();
+        }
+    }
+
+    public void PickGameObject(GameObject gameObject)
+    {
+        if (gameObject == null)
+        {
+            SetInfoText("");
+            ShowAbilityForActivecell(null);
+            return;
+        }
+
         if (ActiveObject != null)
         {
             //Deactivate old active obj
@@ -81,7 +94,7 @@ public class MainController : MonoBehaviour
 
         var activeEnemy = GetEnemyByGround(gameObject);
 
-        var finalCell = activeEnemy != null 
+        var finalCell = activeEnemy != null
             ? activeEnemy.GetComponentInParent<IFinalCell>()
             : gameObject.GetComponentInParent<IFinalCell>();
 
@@ -103,16 +116,34 @@ public class MainController : MonoBehaviour
         }
     }
 
-    public void GenerateMaze(GameObject stairDown)
+    public void GoOneLevelDown(int x, int z)
     {
-        var cell = stairDown.GetComponentInChildren<BaseCellScript>();
-        
-        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
-        mazeGenerator.enterStairsX = cell.X;
-        mazeGenerator.enterStairsZ = cell.Z;
-        mazeGenerator.width++;
-        mazeGenerator.heigth++;
+        SaveLevelChenges();
+        _currentLevelIndex++;
 
+        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
+        if (_currentLevelIndex >= Levels.Count)
+        {
+            mazeGenerator.enterStairsX = x;
+            mazeGenerator.enterStairsZ = z;
+            mazeGenerator.width++;
+            mazeGenerator.height++;
+            var mazeLevel = mazeGenerator.GenerateMaze();
+            Levels.Add(mazeLevel);
+        }
+
+        DrawCurrentMazeLevel();
+    }
+    
+    public void GoOneLevelUp()
+    {
+        SaveLevelChenges();
+        _currentLevelIndex--;
+        DrawCurrentMazeLevel();
+    }
+
+    private void ClearMaze()
+    {
         Enemies.ForEach(Destroy);
         Enemies = new List<GameObject>();
 
@@ -120,12 +151,31 @@ public class MainController : MonoBehaviour
         Landscape = new List<GameObject>();
 
         BorderWall.ForEach(Destroy);
-        BorderWall = new List<GameObject>(); 
+        BorderWall = new List<GameObject>();
 
-        ActiveObject = null;
-
-        mazeGenerator.GenerateMaze();
+        PickGameObject(null);
     }
+
+    private void DrawCurrentMazeLevel()
+    {
+        ClearMaze();
+        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
+        var mazeLevel = Levels[_currentLevelIndex];
+        mazeGenerator.DrawMaze(mazeLevel, _currentLevelIndex);
+    }
+
+    private void SaveLevelChenges()
+    {
+        if (_currentLevelIndex < 0)
+        {
+            return;
+        }
+
+        var heroCell = CoreObjectHelper.GetHeroGameObject().GetComponentInChildren<BaseCellScript>();
+        Levels[_currentLevelIndex].Player.X = heroCell.X;
+        Levels[_currentLevelIndex].Player.Z = heroCell.Z;
+    }
+
 
     private void RunActiveAnimation(GameObject gameObject)
     {
@@ -141,7 +191,7 @@ public class MainController : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        for (var i = 0; i < finalCell.Abilities.Count; i++)
+        for (var i = 0; i < finalCell?.Abilities?.Count; i++)
         {
             var ability = finalCell.Abilities[i];
             var uiAbility = Instantiate(abilityTemplate);
@@ -206,7 +256,7 @@ public class MainController : MonoBehaviour
 
     public void DefaultAction(GameObject gameObject)
     {
-        ActivateGameObject(gameObject);
+        PickGameObject(gameObject);
         ActiveObject
             .GetComponentInParent<IFinalCell>()
             ?.DefaultAbility
@@ -217,7 +267,7 @@ public class MainController : MonoBehaviour
     {
         Enemies.Remove(enemy);
         var ground = GetGroundByEnemy(enemy);
-        ActivateGameObject(ground);
+        PickGameObject(ground);
         Destroy(enemy);
     }
 

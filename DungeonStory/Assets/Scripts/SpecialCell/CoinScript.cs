@@ -38,7 +38,7 @@ public class CoinScript : MonoBehaviour, IHaveInforamtion, IFinalCell
         var mainController = CoreObjectHelper.GetMainController();
         var activeObject = mainController.ActiveObject;
         var ground = mainController.ReplaceToGround(activeObject);
-        mainController.ActivateGameObject(ground);
+        mainController.PickGameObject(ground);
     }
 
     public void KickCoin()

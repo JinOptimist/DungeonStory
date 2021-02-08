@@ -13,7 +13,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
     public int enterStairsZ;
 
     public int width;
-    public int heigth;
+    public int height;
     public double cointChance;
     public int fontaineCount;
     public int countOfEnemies;
@@ -21,21 +21,21 @@ public class MazeGeneratorLogicScript : MonoBehaviour
     public float blockSize;
 
     //int width, int heigth, int enterStairsX, int enterStairsZ, double cointChance, int fontaineCount, int countOfEnemies
-    public void GenerateMaze()
+    public MazeLevelBusinessObject GenerateMaze()
     {
         var mazeBuilder = new MazeBuilder();
         var maze = mazeBuilder.Generate(
-            width, 
-            heigth, 
-            enterStairsX, 
-            enterStairsZ, 
-            cointChance, 
-            fontaineCount, 
+            width,
+            height,
+            enterStairsX,
+            enterStairsZ,
+            cointChance,
+            fontaineCount,
             countOfEnemies);
-        DrawMaze(maze);
+        return maze;
     }
 
-    private void DrawMaze(MazeLevelBusinessObject maze)
+    public void DrawMaze(MazeLevelBusinessObject maze, int currentLevelIndex)
     {
         var mainController = CoreObjectHelper.GetMainController();
         foreach (var cell in maze.Cells)
@@ -86,17 +86,19 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         }
 
         //Draw border wall
-        for (int i = -1; i < width + 1; i++)
+        for (int i = -1; i < maze.Width + 1; i++)
         {
             AddBorderWall(i, -1);
-            AddBorderWall(i, heigth);
+            AddBorderWall(i, maze.Height);
         }
 
-        for (int i = 0; i < heigth; i++)
+        for (int i = 0; i < maze.Height; i++)
         {
             AddBorderWall(-1, i);
-            AddBorderWall(width, i);
+            AddBorderWall(maze.Width, i);
         }
+
+        CoreObjectHelper.GetLightScript().SetBrightnessByLevel(currentLevelIndex);
     }
 
     private void AddBorderWall(int x, int z)

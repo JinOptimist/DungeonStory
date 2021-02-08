@@ -13,6 +13,7 @@ namespace Assets.Helpers
         public const string MainControllerTag = "MainController";
         public const string MainHeroTag = "MainHero";
         public const string MazeGeneratorName = "MazeGenerator";
+        public const string DirectionalLightName = "MainLight";
 
         public const int blockSize = 1;
 
@@ -68,6 +69,11 @@ namespace Assets.Helpers
         public static Vector3 GetPositionByCoordinate(int x, int z)
         {
             return new Vector3(x * blockSize, 0, z * blockSize);
+        }
+    
+        public static LightScript GetLightScript()
+        {
+            return GameObject.Find(DirectionalLightName).GetComponent<LightScript>();
         }
     }
 }

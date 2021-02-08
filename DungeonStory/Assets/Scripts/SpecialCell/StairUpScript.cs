@@ -34,7 +34,7 @@ public class StairUpScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public void GoUp()
     {
-        Debug.Log("We try to go UP");
+        CoreObjectHelper.GetMainController().GoOneLevelUp();
     }
 
     public void Step()

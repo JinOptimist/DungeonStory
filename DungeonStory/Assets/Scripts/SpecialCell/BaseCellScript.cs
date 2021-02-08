@@ -23,7 +23,7 @@ public class BaseCellScript : MonoBehaviour, IHovered, IClicked
 
     public void OnLeftMouseClick()
     {
-        CoreObjectHelper.GetMainController().ActivateGameObject(gameObject);
+        CoreObjectHelper.GetMainController().PickGameObject(gameObject);
     }
 
     public void OnRightMouseClick()

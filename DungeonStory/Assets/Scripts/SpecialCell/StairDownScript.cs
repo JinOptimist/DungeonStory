@@ -41,9 +41,8 @@ public class StairDownScript : MonoBehaviour, IHaveInforamtion, IFinalCell
         var cameraPosition = Camera.main.transform.position;
         Camera.main.transform.position = new Vector3(cameraPosition.x, cameraPosition.y + heightOfDrop, cameraPosition.z);
 
-        hero.transform.position = new Vector3(hero.transform.position.x, heightOfDrop, hero.transform.position.z);
-
-        CoreObjectHelper.GetMainController().GenerateMaze(gameObject);
+        var cell = gameObject.GetComponentInChildren<BaseCellScript>();
+        CoreObjectHelper.GetMainController().GoOneLevelDown(cell.X, cell.Z);
     }
 
     public void Step()
