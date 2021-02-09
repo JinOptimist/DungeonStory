@@ -30,6 +30,6 @@ public class GroundScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public void StepToGround()
     {
-        CoreObjectHelper.GetMainController().MoveHeroToCell();
+        CoreObjectHelper.GetHeroMoveScript().MoveHeroToActiveCell();
     }
 }

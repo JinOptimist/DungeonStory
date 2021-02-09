@@ -39,7 +39,7 @@ public class WallScript : MonoBehaviour, IHaveInforamtion, IFinalCell
     {
         var mainController = CoreObjectHelper.GetMainController();
         var activeObject = mainController.ActiveObject;
-        var tower = mainController.ReplaceToTower(activeObject);
+        var tower = CoreObjectHelper.GetMazeGenerator().ReplaceToTower(activeObject);
         mainController.PickGameObject(tower);
     }
 }

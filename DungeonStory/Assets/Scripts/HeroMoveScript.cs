@@ -65,4 +65,18 @@ public class HeroMoveScript : MonoBehaviour
             }
         }
     }
+
+    public void MoveHeroToActiveCell()
+    {
+        var activeObject = CoreObjectHelper.GetMainController().ActiveObject;
+        var cell = activeObject.GetComponentInChildren<BaseCellScript>();
+        MoveHeroToCell(cell.X, cell.Z);
+    }
+
+    public void MoveHeroToCell(int x, int z)
+    {
+        var baseCell = GetComponentInChildren<BaseCellScript>();
+        baseCell.GetComponent<BaseCellScript>().X = x;
+        baseCell.GetComponent<BaseCellScript>().Z = z;
+    }
 }

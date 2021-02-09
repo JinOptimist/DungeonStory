@@ -5,11 +5,12 @@ namespace Assets.Maze
 {
     public interface IMazeLevelBusinessObject
     {
-        List<ICell> Cells { get; set; }
-        List<ICell> CellsWithCharacters { get; }
+        int Width { get; set; }
         int Height { get; set; }
         Player Player { get; set; }
-        int Width { get; set; }
+
+        List<ICell> Cells { get; set; }
+        List<ICell> CellsWithCharacters { get; }
 
         void ReplaceCell(ICell cell);
         void ReplaceCell(List<ICell> cells, ICell cell);

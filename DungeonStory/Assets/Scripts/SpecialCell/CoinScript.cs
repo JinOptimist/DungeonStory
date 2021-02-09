@@ -36,8 +36,9 @@ public class CoinScript : MonoBehaviour, IHaveInforamtion, IFinalCell
     public void GrabCoin()
     {
         var mainController = CoreObjectHelper.GetMainController();
+        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
         var activeObject = mainController.ActiveObject;
-        var ground = mainController.ReplaceToGround(activeObject);
+        var ground = mazeGenerator.ReplaceToGround(activeObject);
         mainController.PickGameObject(ground);
     }
 

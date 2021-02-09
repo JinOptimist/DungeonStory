@@ -39,7 +39,6 @@ public class StairUpScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public void Step()
     {
-        CoreObjectHelper.GetMainController().MoveHeroToCell();
+        CoreObjectHelper.GetHeroMoveScript().MoveHeroToActiveCell();
     }
-
 }

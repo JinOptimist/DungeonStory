@@ -3,6 +3,7 @@ using Assets.Scripts.BaseCellInterfaces;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BaseCellScript : MonoBehaviour, IHovered, IClicked
 {

@@ -44,6 +44,11 @@ namespace Assets.Helpers
                 .FindGameObjectWithTag(MainHeroTag);
         }
 
+        public static HeroMoveScript GetHeroMoveScript()
+        {
+            return GetHeroGameObject().GetComponent<HeroMoveScript>();
+        }
+
         public static void MoveCellToPosition(GameObject gameObject, int x, int z)
         {
             if (gameObject == null)

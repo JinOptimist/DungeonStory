@@ -15,6 +15,8 @@ public class TowerScript : MonoBehaviour, IHaveInforamtion, IFinalCell, IEndTurn
     public List<Ability> Abilities { get; set; } = new List<Ability>();
     public Ability DefaultAbility { get; set; }
 
+    private List<GameObject> _bullets = new List<GameObject>();
+
     public void Awake()
     {
         Abilities.Add(new Ability(
@@ -31,6 +33,12 @@ public class TowerScript : MonoBehaviour, IHaveInforamtion, IFinalCell, IEndTurn
         bulletPosition.y += 2;
         bullet.transform.position = bulletPosition;
         bullet.GetComponentInChildren<Rigidbody>().AddForce(new Vector3(3, 2, 5), ForceMode.Impulse);
+        _bullets.Add(bullet);
+    }
+
+    private void OnDestroy()
+    {
+        _bullets.ForEach(x => Destroy(x));
     }
 
     public void HitWall()

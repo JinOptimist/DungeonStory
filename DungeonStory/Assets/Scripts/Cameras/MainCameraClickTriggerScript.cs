@@ -26,9 +26,10 @@ public class MainCameraClickTriggerScript : MonoBehaviour
         {
             _oldHoveredObject?.GetComponentInParent<IHovered>()?.OnMouseOut();
         }
-        
+
         //Left mouse
-        if (Input.GetMouseButtonDown(0))
+        //Hack! Use Up instead of Down, to prevent bug with UI
+        if (Input.GetMouseButtonUp(0))
         {
             var iTriggerClick = gameObject
                 .GetComponentsInParent<IClicked>();
@@ -37,9 +38,9 @@ public class MainCameraClickTriggerScript : MonoBehaviour
                 iTriggerClick[0]?.OnLeftMouseClick();
             }
         }
-        
+
         //Right mouse
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonUp(1))
         {
             var iTriggerClick = gameObject
                 .GetComponentsInParent<IClicked>();

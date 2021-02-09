@@ -14,40 +14,20 @@ public class MainController : MonoBehaviour
 {
     public GameObject ActiveObject { get; private set; }
 
-    //Prefab for cell
-    public GameObject wallBrickTemplate;
-    public GameObject coinTemplate;
-    public GameObject heroTemplate;
-    public GameObject groundTemplate;
-    public GameObject fountainTemplate;
-    public GameObject stairsUpTemplate;
-    public GameObject stairsDownTemplate;
-
-    public GameObject enemyTemplate;
-    public GameObject towerTemplate;
-
     //Prefab for UI
     public GameObject abilityTemplate;
 
     //UI
-    public GameObject UIInfoBlockMain { get; private set; }
-
+    public GameObject UIInfoBlockPanel { get; private set; }
     public GameObject UIInfoCellText { get; private set; }
-
     public GameObject UIInfoBlockText { get; private set; }
-
     public GameObject CellActionGroup { get; private set; }
-
-    public List<GameObject> Enemies { get; private set; } = new List<GameObject>();
-    public List<GameObject> Landscape { get; private set; } = new List<GameObject>();
-
-    public List<GameObject> BorderWall { get; private set; } = new List<GameObject>();
 
     private int _currentLevelIndex;
     public List<MazeLevelBusinessObject> Levels { get; private set; } = new List<MazeLevelBusinessObject>();
 
     //UI
-    public const string UIInfoBlockMainName = "UIInfoBlockMain";
+    public const string UIInfoBlockPanelName = "UIInfoBlockPanel";
     public const string UIInfoBlockTextName = "UIInfoBlockText";
     public const string UIInfoCellTextName = "UIInfoCellText";
     public const string CellActionGroupName = "CellActionGroup";
@@ -57,14 +37,14 @@ public class MainController : MonoBehaviour
 
     void Start()
     {
-        UIInfoBlockMain = GameObject.Find(UIInfoBlockMainName);
+        UIInfoBlockPanel = GameObject.Find(UIInfoBlockPanelName);
         UIInfoCellText = GameObject.Find(UIInfoCellTextName);
         UIInfoBlockText = GameObject.Find(UIInfoBlockTextName);
 
         CellActionGroup = GameObject.Find(CellActionGroupName);
 
-        UIInfoBlockMain.SetActive(false);
-        UIInfoBlockText.SetActive(false);
+        //UIInfoBlockMain.SetActive(false);
+        //UIInfoBlockText.SetActive(false);
 
         _currentLevelIndex = -1;
         GoOneLevelDown(1, 1);
@@ -72,61 +52,23 @@ public class MainController : MonoBehaviour
 
     public void EndTurn()
     {
-        foreach (var enemyGameObject in Enemies)
+        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
+        foreach (var enemyGameObject in mazeGenerator.Enemies)
         {
             enemyGameObject.GetComponent<AiEndTurnScript>()?.EndTurn();
         }
 
-        Landscape
+        mazeGenerator.Landscape
             .Select(x => x.GetComponentInChildren<IEndTurn>())
             .Where(x => x != null)
             .ToList()
             .ForEach(x => x.EndTurn());
     }
 
-    public void PickGameObject(GameObject gameObject)
-    {
-        if (gameObject == null)
-        {
-            SetInfoText("");
-            ShowAbilityForActivecell(null);
-            return;
-        }
-
-        if (ActiveObject != null)
-        {
-            //Deactivate old active obj
-            ActiveObject.GetComponentInChildren<Animator>()
-                .SetBool(IsCubeActive, false);
-        }
-
-        var activeEnemy = GetEnemyByGround(gameObject);
-
-        var finalCell = activeEnemy != null
-            ? activeEnemy.GetComponentInParent<IFinalCell>()
-            : gameObject.GetComponentInParent<IFinalCell>();
-
-        ActiveObject = ((MonoBehaviour)finalCell).gameObject;
-
-        RunActiveAnimation(ActiveObject);
-
-        ShowAbilityForActivecell(finalCell);
-
-        var inforamtion = ActiveObject.GetComponentInChildren<IHaveInforamtion>();
-        if (inforamtion != null)
-        {
-            var infoText = ActiveObject.GetComponentInChildren<IHaveInforamtion>()?.InfoText;
-            CoreObjectHelper.GetMainController().SetInfoText(infoText);
-        }
-        else
-        {
-            SetInfoText("");
-        }
-    }
-
     public void GoOneLevelDown(int x, int z)
     {
-        SaveLevelChenges();
+        var mainController = CoreObjectHelper.GetMainController();
+        mainController.SaveLevelChenges();
         _currentLevelIndex++;
 
         var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
@@ -150,29 +92,45 @@ public class MainController : MonoBehaviour
         DrawCurrentMazeLevel();
     }
 
-    private void ClearMaze()
+
+    public void PickGameObject(GameObject pickedGameObject)
     {
-        Enemies.ForEach(Destroy);
-        Enemies = new List<GameObject>();
+        SetInfoText("");
+        if (pickedGameObject == null)
+        {
+            ShowAbilityForActivecell(null);
+            return;
+        }
 
-        Landscape.ForEach(Destroy);
-        Landscape = new List<GameObject>();
+        if (ActiveObject != null)
+        {
+            //Deactivate old active obj
+            ActiveObject.GetComponentInChildren<Animator>()
+                .SetBool(IsCubeActive, false);
+        }
 
-        BorderWall.ForEach(Destroy);
-        BorderWall = new List<GameObject>();
+        var activeEnemy = CoreObjectHelper.GetMazeGenerator().GetEnemyByGround(pickedGameObject);
 
-        PickGameObject(null);
+        var finalCell = activeEnemy != null
+            ? activeEnemy.GetComponentInParent<IFinalCell>()
+            : pickedGameObject.GetComponentInParent<IFinalCell>();
+
+        ActiveObject = ((MonoBehaviour)finalCell).gameObject;
+
+        RunActiveAnimation(ActiveObject);
+
+        ShowAbilityForActivecell(finalCell);
+
+        var inforamtion = ActiveObject.GetComponentInChildren<IHaveInforamtion>();
+        if (inforamtion != null)
+        {
+            var infoText = ActiveObject.GetComponentInChildren<IHaveInforamtion>()?.InfoText;
+            CoreObjectHelper.GetMainController().SetInfoText(infoText);
+        }
     }
 
-    private void DrawCurrentMazeLevel()
-    {
-        ClearMaze();
-        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
-        var mazeLevel = Levels[_currentLevelIndex];
-        mazeGenerator.DrawMaze(mazeLevel, _currentLevelIndex);
-    }
-
-    private void SaveLevelChenges()
+    
+    public void SaveLevelChenges()
     {
         if (_currentLevelIndex < 0)
         {
@@ -183,7 +141,6 @@ public class MainController : MonoBehaviour
         Levels[_currentLevelIndex].Player.X = heroCell.X;
         Levels[_currentLevelIndex].Player.Z = heroCell.Z;
     }
-
 
     private void RunActiveAnimation(GameObject gameObject)
     {
@@ -220,56 +177,14 @@ public class MainController : MonoBehaviour
         }
     }
 
-    public GameObject ReplaceToGround(GameObject from)
-    {
-        var ground = Instantiate(groundTemplate);
-        return ReplaceCell(from, ground);
-    }
-
-    public GameObject ReplaceToTower(GameObject from)
-    {
-        var tower = Instantiate(towerTemplate);
-        return ReplaceCell(from, tower);
-    }
-
-    public GameObject ReplaceCell(GameObject from, GameObject to)
-    {
-        Landscape.Remove(from);
-
-        var baseCell = from.GetComponentInChildren<BaseCellScript>();
-
-        var finalCell = ((MonoBehaviour)from.GetComponentInParent<IFinalCell>()).gameObject;
-        Destroy(finalCell);
-
-        CoreObjectHelper.MoveCellToPosition(to, baseCell.X, baseCell.Z);
-
-        Landscape.Add(to);
-
-        return to;
-    }
-
-    public void MoveHeroToCell()
-    {
-        var cell = ActiveObject.GetComponentInChildren<BaseCellScript>();
-        MoveHeroToCell(cell.X, cell.Z);
-    }
-
-    public void MoveHeroToCell(int x, int z)
-    {
-        var hero = CoreObjectHelper.GetHeroGameObject();
-        hero.GetComponent<BaseCellScript>().X = x;
-        hero.GetComponent<BaseCellScript>().Z = z;
-    }
-
+    
     public void SetInfoText(string infoText)
     {
         if (string.IsNullOrEmpty(infoText))
         {
-            UIInfoBlockMain.SetActive(false);
             return;
         }
 
-        UIInfoBlockMain.SetActive(true);
         UIInfoCellText.GetComponent<Text>().text = infoText;
     }
 
@@ -284,33 +199,18 @@ public class MainController : MonoBehaviour
 
     public void KillEnemy(GameObject enemy)
     {
-        Enemies.Remove(enemy);
-        var ground = GetGroundByEnemy(enemy);
+        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
+        mazeGenerator.Enemies.Remove(enemy);
+        var ground = mazeGenerator.GetGroundByEnemy(enemy);
         PickGameObject(ground);
         Destroy(enemy);
     }
 
-    public GameObject GetEnemyByGround(GameObject ground)
+    private void DrawCurrentMazeLevel()
     {
-        return GetEnemyByGround(ground.GetComponentInChildren<BaseCellScript>());
-    }
-
-    public GameObject GetEnemyByGround(BaseCellScript cell)
-    {
-        return GetCell(Enemies, cell);
-    }
-
-    public GameObject GetGroundByEnemy(GameObject enemy)
-    {
-        return GetCell(Landscape, enemy.GetComponentInChildren<BaseCellScript>());
-    }
-
-    private GameObject GetCell(List<GameObject> gameObjects, BaseCellScript cell)
-    {
-        return gameObjects.FirstOrDefault(gameObj =>
-        {
-            var gameObjCell = gameObj.GetComponentInChildren<BaseCellScript>();
-            return gameObjCell.X == cell.X && gameObjCell.Z == cell.Z;
-        });
+        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
+        mazeGenerator.ClearMaze();
+        var mazeLevel = Levels[_currentLevelIndex];
+        mazeGenerator.DrawMaze(mazeLevel, _currentLevelIndex);
     }
 }
