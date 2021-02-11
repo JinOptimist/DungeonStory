@@ -1,10 +1,12 @@
-﻿using Assets.Scripts.BaseCellInterfaces;
+﻿using Assets.Helpers;
+using Assets.Scripts.BaseCellInterfaces;
 using Assets.Scripts.SpecialCell;
 using Assets.Scripts.SpecialCell.AbilityStuff;
 using Assets.Scripts.SpecialCell.CellInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TowerScript : MonoBehaviour, IHaveInforamtion, IFinalCell, IEndTurn
@@ -28,11 +30,26 @@ public class TowerScript : MonoBehaviour, IHaveInforamtion, IFinalCell, IEndTurn
 
     public void EndTurn()
     {
+        var cell = GetComponentInChildren<BaseCellScript>();
+        var enemies = CoreObjectHelper.GetMazeGenerator().GetNearEnemy(cell);
+        if (enemies.Any())
+        {
+            Fire(enemies.GetRandom());
+        }
+    }
+
+    public void Fire(GameObject enemy)
+    {
         var bullet = Instantiate(bulletTemplate);
         var bulletPosition = gameObject.transform.position;
         bulletPosition.y += 2;
         bullet.transform.position = bulletPosition;
-        bullet.GetComponentInChildren<Rigidbody>().AddForce(new Vector3(3, 2, 5), ForceMode.Impulse);
+
+        var enemyX = enemy.transform.position.x - transform.position.x;
+        var enemyZ = enemy.transform.position.z - transform.position.z;
+        var fireImpulse = new Vector3(enemyX * 2, 0, enemyZ * 2);
+
+        bullet.GetComponentInChildren<Rigidbody>().AddForce(fireImpulse, ForceMode.Impulse);
         _bullets.Add(bullet);
     }
 

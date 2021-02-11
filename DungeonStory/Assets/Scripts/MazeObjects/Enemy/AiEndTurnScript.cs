@@ -11,7 +11,7 @@ public class AiEndTurnScript : MonoBehaviour, IEndTurn
     {
         var myCell = gameObject.GetComponentInChildren<BaseCellScript>();
 
-        Debug.Log($"Я бот. [{myCell.X}, {myCell.Z}]. Конец хода");
+        //Debug.Log($"Я бот. [{myCell.X}, {myCell.Z}]. Конец хода");
 
         var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
         var heroCell = CoreObjectHelper.GetHeroGameObject().GetComponentInChildren<BaseCellScript>();
@@ -24,7 +24,7 @@ public class AiEndTurnScript : MonoBehaviour, IEndTurn
                 || x.X == myCell.X + 1 && x.Z == myCell.Z
                 || x.X == myCell.X - 1 && x.Z == myCell.Z)//GetNearCell
             .Where(cell => cell.X != heroCell.X || cell.Z != heroCell.Z)//Get cell without hero
-            .Where(x => mazeGenerator.GetEnemyByGround(x) == null)//Get ground without enemy
+            .Where(x => mazeGenerator.GetEnemy(x) == null)//Get ground without enemy
             .GetRandom();
 
         myCell.X = randomCell?.X ?? myCell.X;

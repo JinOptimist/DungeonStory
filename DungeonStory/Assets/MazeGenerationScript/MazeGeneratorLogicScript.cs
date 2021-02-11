@@ -3,6 +3,7 @@ using Assets.Maze;
 using Assets.Maze.Cell;
 using Assets.MazeGenerationScript.Cell;
 using Assets.Scripts.SpecialCell;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
     public MazeLevelBusinessObject GenerateMaze()
     {
         var mazeBuilder = new MazeBuilder();
+        var startMazeGenerate = DateTime.Now;
         var maze = mazeBuilder.Generate(
             width,
             height,
@@ -49,6 +51,8 @@ public class MazeGeneratorLogicScript : MonoBehaviour
             cointChance,
             fontaineCount,
             countOfEnemies);
+        var endMazeGenerate = DateTime.Now;
+        Debug.Log($"GENERATION TIME {(endMazeGenerate - startMazeGenerate).TotalSeconds} s");
         return maze;
     }
 
@@ -94,7 +98,7 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         }
 
         CoreObjectHelper.GetHeroMoveScript().MoveHeroToCell(maze.Player.X, maze.Player.Z);
-        
+
         foreach (var enemy in maze.Enemies)
         {
             var enemyGameObject = Instantiate(enemyTemplate);
@@ -118,7 +122,6 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         CoreObjectHelper.GetLightScript().SetBrightnessByLevel(currentLevelIndex);
     }
 
-    
     public GameObject ReplaceToGround(GameObject from)
     {
         var ground = Instantiate(groundTemplate);
@@ -147,12 +150,12 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         return to;
     }
 
-    public GameObject GetEnemyByGround(GameObject ground)
+    public GameObject GetEnemy(GameObject ground)
     {
-        return GetEnemyByGround(ground.GetComponentInChildren<BaseCellScript>());
+        return FindCell(Enemies, ground.GetComponentInChildren<BaseCellScript>());
     }
 
-    public GameObject GetEnemyByGround(BaseCellScript cell)
+    public GameObject GetEnemy(BaseCellScript cell)
     {
         return FindCell(Enemies, cell);
     }
@@ -162,18 +165,28 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         return FindCell(Landscape, enemy.GetComponentInChildren<BaseCellScript>());
     }
 
+    public GameObject GetEnemy(int x, int z)
+    {
+        return FindCell(Enemies, x, z);
+    }
+
     private GameObject FindCell(List<GameObject> gameObjects, BaseCellScript cell)
+    {
+        return FindCell(gameObjects, cell.X, cell.Z);
+    }
+
+    private GameObject FindCell(List<GameObject> gameObjects, int x, int z)
     {
         return gameObjects.FirstOrDefault(gameObj =>
         {
             var gameObjCell = gameObj.GetComponentInChildren<BaseCellScript>();
-            return gameObjCell.X == cell.X && gameObjCell.Z == cell.Z;
+            return gameObjCell.X == x && gameObjCell.Z == z;
         });
     }
 
     public void ClearMaze()
     {
-        
+
         Enemies.ForEach(Destroy);
         Enemies.Clear();
 
@@ -186,7 +199,18 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         CoreObjectHelper.GetMainController().PickGameObject(null);
     }
 
-    
+    public List<GameObject> GetNearEnemy(BaseCellScript cell)
+    {
+        var x = cell.X;
+        var z = cell.Z;
+        var nearEnemies = new List<GameObject>() {
+            GetEnemy(x + 1, z),
+            GetEnemy(x - 1, z),
+            GetEnemy(x, z + 1),
+            GetEnemy(x, z - 1),
+        };
+        return nearEnemies.Where(enemy => enemy != null).ToList();
+    }
 
     private void AddBorderWall(int x, int z)
     {

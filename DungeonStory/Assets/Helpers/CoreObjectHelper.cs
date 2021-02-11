@@ -10,7 +10,8 @@ namespace Assets.Helpers
 {
     public class CoreObjectHelper
     {
-        public const string MainControllerTag = "MainController";
+        public const string MainControllerName = "MainController";
+        public const string UiControllerName = "UiController";
         public const string MainHeroTag = "MainHero";
         public const string MazeGeneratorName = "MazeGenerator";
         public const string DirectionalLightName = "MainLight";
@@ -18,17 +19,29 @@ namespace Assets.Helpers
         public const int blockSize = 1;
 
         private static MainController _mainController;
-
         public static MainController GetMainController()
         {
             if (_mainController == null)
             {
                 _mainController = GameObject
-                    .FindGameObjectWithTag(MainControllerTag)
+                    .Find(MainControllerName)
                     .GetComponent<MainController>();
             }
 
             return _mainController;
+        }
+
+        private static UiController _uiController;
+        public static UiController GetUiController()
+        {
+            if (_uiController == null)
+            {
+                _uiController = GameObject
+                    .Find(UiControllerName)
+                    .GetComponent<UiController>();
+            }
+
+            return _uiController;
         }
 
         public static MazeGeneratorLogicScript GetMazeGenerator()

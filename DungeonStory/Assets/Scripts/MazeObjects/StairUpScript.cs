@@ -34,6 +34,9 @@ public class StairUpScript : MonoBehaviour, IHaveInforamtion, IFinalCell
 
     public void GoUp()
     {
+        var cameraPosition = Camera.main.transform.position;
+        Camera.main.transform.position = new Vector3(cameraPosition.x, cameraPosition.y - 2f, cameraPosition.z);
+
         CoreObjectHelper.GetMainController().GoOneLevelUp();
     }
 

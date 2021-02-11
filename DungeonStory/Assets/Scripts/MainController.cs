@@ -3,6 +3,7 @@ using Assets.Maze;
 using Assets.Scripts.BaseCellInterfaces;
 using Assets.Scripts.SpecialCell;
 using Assets.Scripts.SpecialCell.CellInterface;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,38 +15,16 @@ public class MainController : MonoBehaviour
 {
     public GameObject ActiveObject { get; private set; }
 
-    //Prefab for UI
-    public GameObject abilityTemplate;
-
-    //UI
-    public GameObject UIInfoBlockPanel { get; private set; }
-    public GameObject UIInfoCellText { get; private set; }
-    public GameObject UIInfoBlockText { get; private set; }
-    public GameObject CellActionGroup { get; private set; }
-
+    
     private int _currentLevelIndex;
     public List<MazeLevelBusinessObject> Levels { get; private set; } = new List<MazeLevelBusinessObject>();
 
-    //UI
-    public const string UIInfoBlockPanelName = "UIInfoBlockPanel";
-    public const string UIInfoBlockTextName = "UIInfoBlockText";
-    public const string UIInfoCellTextName = "UIInfoCellText";
-    public const string CellActionGroupName = "CellActionGroup";
-
+    
     //Animation
     public const string IsCubeActive = "IsActive";
 
     void Start()
     {
-        UIInfoBlockPanel = GameObject.Find(UIInfoBlockPanelName);
-        UIInfoCellText = GameObject.Find(UIInfoCellTextName);
-        UIInfoBlockText = GameObject.Find(UIInfoBlockTextName);
-
-        CellActionGroup = GameObject.Find(CellActionGroupName);
-
-        //UIInfoBlockMain.SetActive(false);
-        //UIInfoBlockText.SetActive(false);
-
         _currentLevelIndex = -1;
         GoOneLevelDown(1, 1);
     }
@@ -92,13 +71,13 @@ public class MainController : MonoBehaviour
         DrawCurrentMazeLevel();
     }
 
-
     public void PickGameObject(GameObject pickedGameObject)
     {
-        SetInfoText("");
+        var uiController = CoreObjectHelper.GetUiController();
+        uiController.SetInfoText("");
         if (pickedGameObject == null)
         {
-            ShowAbilityForActivecell(null);
+            uiController.ShowAbilityForActivecell(null);
             return;
         }
 
@@ -109,7 +88,7 @@ public class MainController : MonoBehaviour
                 .SetBool(IsCubeActive, false);
         }
 
-        var activeEnemy = CoreObjectHelper.GetMazeGenerator().GetEnemyByGround(pickedGameObject);
+        var activeEnemy = CoreObjectHelper.GetMazeGenerator().GetEnemy(pickedGameObject);
 
         var finalCell = activeEnemy != null
             ? activeEnemy.GetComponentInParent<IFinalCell>()
@@ -119,16 +98,15 @@ public class MainController : MonoBehaviour
 
         RunActiveAnimation(ActiveObject);
 
-        ShowAbilityForActivecell(finalCell);
+        uiController.ShowAbilityForActivecell(finalCell);
 
         var inforamtion = ActiveObject.GetComponentInChildren<IHaveInforamtion>();
         if (inforamtion != null)
         {
             var infoText = ActiveObject.GetComponentInChildren<IHaveInforamtion>()?.InfoText;
-            CoreObjectHelper.GetMainController().SetInfoText(infoText);
+            uiController.SetInfoText(infoText);
         }
     }
-
     
     public void SaveLevelChenges()
     {
@@ -140,52 +118,6 @@ public class MainController : MonoBehaviour
         var heroCell = CoreObjectHelper.GetHeroGameObject().GetComponentInChildren<BaseCellScript>();
         Levels[_currentLevelIndex].Player.X = heroCell.X;
         Levels[_currentLevelIndex].Player.Z = heroCell.Z;
-    }
-
-    private void RunActiveAnimation(GameObject gameObject)
-    {
-        ActiveObject
-            .GetComponentInChildren<Animator>()
-            .SetBool(IsCubeActive, true);
-    }
-
-    private void ShowAbilityForActivecell(IFinalCell finalCell)
-    {
-        foreach (Transform child in CellActionGroup.transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        for (var i = 0; i < finalCell?.Abilities?.Count; i++)
-        {
-            var ability = finalCell.Abilities[i];
-            var uiAbility = Instantiate(abilityTemplate);
-            uiAbility.transform.parent = CellActionGroup.GetComponent<Transform>();
-
-            var rectTransform = uiAbility.GetComponent<RectTransform>();
-            var width = rectTransform.rect.width;
-            rectTransform.localPosition = new Vector3(width * i, 0, 0);
-
-            uiAbility.GetComponent<AbilityUIClickScript>().Ability = ability;
-
-            uiAbility.GetComponentInChildren<Text>().text = ability.Name;
-
-            if (!ability.Abailable)
-            {
-                uiAbility.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f);
-            }
-        }
-    }
-
-    
-    public void SetInfoText(string infoText)
-    {
-        if (string.IsNullOrEmpty(infoText))
-        {
-            return;
-        }
-
-        UIInfoCellText.GetComponent<Text>().text = infoText;
     }
 
     public void DefaultAction(GameObject gameObject)
@@ -206,11 +138,21 @@ public class MainController : MonoBehaviour
         Destroy(enemy);
     }
 
+    private void RunActiveAnimation(GameObject gameObject)
+    {
+        ActiveObject
+            .GetComponentInChildren<Animator>()
+            .SetBool(IsCubeActive, true);
+    }
+
     private void DrawCurrentMazeLevel()
     {
         var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
         mazeGenerator.ClearMaze();
         var mazeLevel = Levels[_currentLevelIndex];
+        var startDraw = DateTime.Now;
         mazeGenerator.DrawMaze(mazeLevel, _currentLevelIndex);
+        var endDraw = DateTime.Now;
+        Debug.Log($"DRAW TIME {(endDraw - startDraw).TotalSeconds} s");
     }
 }

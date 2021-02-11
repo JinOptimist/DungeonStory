@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeadByTimeout : MonoBehaviour
+public class BulletScript : MonoBehaviour
 {
     public int LifeTimeSecond;
 
