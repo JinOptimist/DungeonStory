@@ -16,7 +16,7 @@ namespace Assets.Maze
         private MazeLevelBusinessObject _maze;
         private System.Random _random = new System.Random();
         public const float NearCellChance = .3f;
-        public const float NearCrossCellChance = .1f;
+        public const float NearCrossCellChance = .05f;
 
         public MazeLevelBusinessObject Generate(int width, int height,
             int enterStairsX, int enterStairsZ,
@@ -187,19 +187,13 @@ namespace Assets.Maze
 
                     cellWithWeight.Weight -= NearCellChance;
                 }
-                else if (IsNearCross(cellWithWeight.Cell, keyCell.Cell))
+
+                if (cellWithWeight.IsReadyToBreak && IsNear(cellWithWeight.Cell, keyCell.Cell, 1))
                 {
-                    if (!cellWithWeight.IsReadyToBreak)
-                    {
-                        continue;
-                    }
-
-                    //if (!cellWithWeight.IsReadyToBreak)
-                    //{
-                    //    cellWithWeight.IsReadyToBreak = true;
-                    //    cellWithWeight.Weight = 1f;
-                    //}
-
+                    cellWithWeight.Weight -= NearCrossCellChance;
+                }
+                if (cellWithWeight.IsReadyToBreak && IsNear(cellWithWeight.Cell, keyCell.Cell, 2))
+                {
                     cellWithWeight.Weight -= NearCrossCellChance;
                 }
 
@@ -237,12 +231,10 @@ namespace Assets.Maze
                 || cellOne.X == cellTwo.X - 1 && cellOne.Z == cellTwo.Z;
         }
 
-        private bool IsNearCross(ICell cellOne, ICell cellTwo)
+        private bool IsNear(ICell cellOne, ICell cellTwo, int radius)
         {
-            return cellOne.X == cellTwo.X + 1 && cellOne.Z == cellTwo.Z + 1
-                || cellOne.X == cellTwo.X + 1 && cellOne.Z == cellTwo.Z - 1
-                || cellOne.X == cellTwo.X - 1 && cellOne.Z == cellTwo.Z + 1
-                || cellOne.X == cellTwo.X - 1 && cellOne.Z == cellTwo.Z - 1;
+            return Math.Abs(cellOne.X - cellTwo.X) < radius
+                && Math.Abs(cellOne.Z - cellTwo.Z) < radius;
         }
 
         //private ICell GetRandom(IEnumerable<ICell> cells)
