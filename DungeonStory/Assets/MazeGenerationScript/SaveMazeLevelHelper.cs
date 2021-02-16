@@ -50,6 +50,29 @@ namespace Assets.MazeGenerationScript
                     cell = new Ground(0, 0, null);
                 }
 
+                var stairDownGameObj = cellGameObject.GetComponent<StairDownScript>();
+                if (stairDownGameObj != null)
+                {
+                    cell = new StairToDown(0, 0, null);
+                }
+
+                var stairUpGameObj = cellGameObject.GetComponent<StairUpScript>();
+                if (stairUpGameObj != null)
+                {
+                    cell = new StairToUp(0, 0, null);
+                }
+
+                var fountainGameObj = cellGameObject.GetComponent<FountainScript>();
+                if (fountainGameObj != null)
+                {
+                    cell = new Fountain(0, 0, null);
+                }
+
+                if (cell == null)
+                {
+                    var a = 12223;
+                }
+
                 var baseCell = cellGameObject.GetComponentInChildren<BaseCellScript>();
                 cell.X = baseCell.X;
                 cell.Z = baseCell.Z;
