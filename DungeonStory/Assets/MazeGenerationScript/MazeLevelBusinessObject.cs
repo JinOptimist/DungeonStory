@@ -35,6 +35,18 @@ namespace Assets.Maze
             }
         }
 
+        public ICell this[int x, int z]
+        {
+            get
+            {
+                return Cells.SingleOrDefault(cell => cell.X == x && cell.Z == z);
+            }
+            set
+            {
+                ReplaceCell(value);
+            }
+        }
+
         public MazeLevelBusinessObject(int width, int height)
         {
             Width = width;

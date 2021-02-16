@@ -15,17 +15,16 @@ public class MainController : MonoBehaviour
 {
     public GameObject ActiveObject { get; private set; }
 
-    
-    private int _currentLevelIndex;
-    public List<MazeLevelBusinessObject> Levels { get; private set; } = new List<MazeLevelBusinessObject>();
+    public int CurrentLevelIndex { get; private set; }
 
+    public List<MazeLevelBusinessObject> Levels { get; private set; } = new List<MazeLevelBusinessObject>();
     
     //Animation
     public const string IsCubeActive = "IsActive";
 
     void Start()
     {
-        _currentLevelIndex = -1;
+        CurrentLevelIndex = -1;
         GoOneLevelDown(1, 1);
     }
 
@@ -46,12 +45,12 @@ public class MainController : MonoBehaviour
 
     public void GoOneLevelDown(int x, int z)
     {
-        var mainController = CoreObjectHelper.GetMainController();
-        mainController.SaveLevelChenges();
-        _currentLevelIndex++;
+        var mazeGerate = CoreObjectHelper.GetMazeGenerator();
+        mazeGerate.SaveLevelChanges();
+        CurrentLevelIndex++;
 
         var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
-        if (_currentLevelIndex >= Levels.Count)
+        if (CurrentLevelIndex >= Levels.Count)
         {
             mazeGenerator.enterStairsX = x;
             mazeGenerator.enterStairsZ = z;
@@ -66,8 +65,9 @@ public class MainController : MonoBehaviour
 
     public void GoOneLevelUp()
     {
-        SaveLevelChenges();
-        _currentLevelIndex--;
+        var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
+        mazeGenerator.SaveLevelChanges();
+        CurrentLevelIndex--;
         DrawCurrentMazeLevel();
     }
 
@@ -108,17 +108,7 @@ public class MainController : MonoBehaviour
         }
     }
     
-    public void SaveLevelChenges()
-    {
-        if (_currentLevelIndex < 0)
-        {
-            return;
-        }
-
-        var heroCell = CoreObjectHelper.GetHeroGameObject().GetComponentInChildren<BaseCellScript>();
-        Levels[_currentLevelIndex].Player.X = heroCell.X;
-        Levels[_currentLevelIndex].Player.Z = heroCell.Z;
-    }
+    
 
     public void DefaultAction(GameObject gameObject)
     {
@@ -149,9 +139,9 @@ public class MainController : MonoBehaviour
     {
         var mazeGenerator = CoreObjectHelper.GetMazeGenerator();
         mazeGenerator.ClearMaze();
-        var mazeLevel = Levels[_currentLevelIndex];
+        var mazeLevel = Levels[CurrentLevelIndex];
         var startDraw = DateTime.Now;
-        mazeGenerator.DrawMaze(mazeLevel, _currentLevelIndex);
+        mazeGenerator.DrawMaze(mazeLevel, CurrentLevelIndex);
         var endDraw = DateTime.Now;
         Debug.Log($"DRAW TIME {(endDraw - startDraw).TotalSeconds} s");
     }

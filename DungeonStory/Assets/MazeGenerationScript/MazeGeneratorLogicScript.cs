@@ -1,6 +1,7 @@
 ﻿using Assets.Helpers;
 using Assets.Maze;
 using Assets.Maze.Cell;
+using Assets.MazeGenerationScript;
 using Assets.MazeGenerationScript.Cell;
 using Assets.Scripts.SpecialCell;
 using System;
@@ -122,6 +123,18 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         CoreObjectHelper.GetLightScript().SetBrightnessByLevel(currentLevelIndex);
     }
 
+    public void SaveLevelChanges()
+    {
+        var main = CoreObjectHelper.GetMainController();
+        var level = main.CurrentLevelIndex;
+        if (level < 0)
+        {
+            return;
+        }
+        
+        main.Levels[level] = new SaveMazeLevelHelper().Save(this);
+    }
+
     public GameObject ReplaceToGround(GameObject from)
     {
         var ground = Instantiate(groundTemplate);
@@ -170,20 +183,6 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         return FindCell(Enemies, x, z);
     }
 
-    private GameObject FindCell(List<GameObject> gameObjects, BaseCellScript cell)
-    {
-        return FindCell(gameObjects, cell.X, cell.Z);
-    }
-
-    private GameObject FindCell(List<GameObject> gameObjects, int x, int z)
-    {
-        return gameObjects.FirstOrDefault(gameObj =>
-        {
-            var gameObjCell = gameObj.GetComponentInChildren<BaseCellScript>();
-            return gameObjCell.X == x && gameObjCell.Z == z;
-        });
-    }
-
     public void ClearMaze()
     {
 
@@ -208,6 +207,11 @@ public class MazeGeneratorLogicScript : MonoBehaviour
             GetEnemy(x - 1, z),
             GetEnemy(x, z + 1),
             GetEnemy(x, z - 1),
+
+            GetEnemy(x + 1, z - 1),
+            GetEnemy(x + 1, z + 1),
+            GetEnemy(x - 1, z + 1),
+            GetEnemy(x - 1, z - 1),
         };
         return nearEnemies.Where(enemy => enemy != null).ToList();
     }
@@ -217,5 +221,19 @@ public class MazeGeneratorLogicScript : MonoBehaviour
         var borderWall = Instantiate(wallBrickTemplate);
         BorderWall.Add(borderWall);
         CoreObjectHelper.MoveCellToPosition(borderWall, x, z);
+    }
+
+    private GameObject FindCell(List<GameObject> gameObjects, BaseCellScript cell)
+    {
+        return FindCell(gameObjects, cell.X, cell.Z);
+    }
+
+    private GameObject FindCell(List<GameObject> gameObjects, int x, int z)
+    {
+        return gameObjects.FirstOrDefault(gameObj =>
+        {
+            var gameObjCell = gameObj.GetComponentInChildren<BaseCellScript>();
+            return gameObjCell.X == x && gameObjCell.Z == z;
+        });
     }
 }

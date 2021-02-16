@@ -875,11 +875,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enterStairsX: 1
   enterStairsZ: 1
-  width: 2
-  height: 2
+  width: 5
+  height: 5
   cointChance: 0.1
   fontaineCount: 1
-  countOfEnemies: 2
+  countOfEnemies: 10
   blockSize: 1
   wallBrickTemplate: {fileID: 159042025259191057, guid: 657ee75f02eab4648a213e3e756b60be,
     type: 3}

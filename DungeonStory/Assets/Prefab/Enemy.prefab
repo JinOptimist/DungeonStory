@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveAnimationSpeed: 1
-  hp: 8
+  hp: 3
 --- !u!114 &-1303876254453624448
 MonoBehaviour:
   m_ObjectHideFlags: 0

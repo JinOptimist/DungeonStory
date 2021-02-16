@@ -34,20 +34,22 @@ public class TowerScript : MonoBehaviour, IHaveInforamtion, IFinalCell, IEndTurn
         var enemies = CoreObjectHelper.GetMazeGenerator().GetNearEnemy(cell);
         if (enemies.Any())
         {
-            Fire(enemies.GetRandom());
+            FireToEnemy(enemies.GetRandom());
         }
     }
 
-    public void Fire(GameObject enemy)
+    public void FireToEnemy(GameObject enemy)
     {
         var bullet = Instantiate(bulletTemplate);
         var bulletPosition = gameObject.transform.position;
         bulletPosition.y += 2;
         bullet.transform.position = bulletPosition;
 
-        var enemyX = enemy.transform.position.x - transform.position.x;
-        var enemyZ = enemy.transform.position.z - transform.position.z;
-        var fireImpulse = new Vector3(enemyX * 2, 0, enemyZ * 2);
+        var impulesDirectionX = enemy.transform.position.x - transform.position.x;
+        var impulesDirectionY = enemy.transform.position.y - bulletPosition.y;
+        var impulesDirectionZ = enemy.transform.position.z - transform.position.z;
+        
+        var fireImpulse = new Vector3(impulesDirectionX, impulesDirectionY / 2, impulesDirectionZ) * 3;
 
         bullet.GetComponentInChildren<Rigidbody>().AddForce(fireImpulse, ForceMode.Impulse);
         _bullets.Add(bullet);

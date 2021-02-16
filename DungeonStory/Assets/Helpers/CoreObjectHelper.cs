@@ -16,6 +16,8 @@ namespace Assets.Helpers
         public const string MazeGeneratorName = "MazeGenerator";
         public const string DirectionalLightName = "MainLight";
 
+        public const string GroundName = "Ground";
+
         public const int blockSize = 1;
 
         private static MainController _mainController;
