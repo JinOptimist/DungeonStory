@@ -1,6 +1,7 @@
 ﻿using Assets.Helpers;
 using Assets.Maze.Cell;
 using Assets.MazeGenerationScript.Cell;
+using Assets.MazeGenerationScript.GenerationHelpObj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Assets.Maze
     {
         private MazeLevelBusinessObject _maze;
         private System.Random _random = new System.Random();
+        public const float NearCellChance = .3f;
+        public const float NearCrossCellChance = .1f;
 
         public MazeLevelBusinessObject Generate(int width, int height,
             int enterStairsX, int enterStairsZ,
@@ -31,9 +34,10 @@ namespace Assets.Maze
 
             _maze = new MazeLevelBusinessObject(width, height);
 
-            GenerateWall();
+            GenerateFullWall();
 
-            GenerateGround(enterStairsX, enterStairsZ);
+            //GenerateGroundV1(enterStairsX, enterStairsZ);
+            GenerateGroundV2(enterStairsX, enterStairsZ);
 
             GenerateStairs(enterStairsX, enterStairsZ);
 
@@ -52,8 +56,12 @@ namespace Assets.Maze
         {
             var stairToUp = new StairToUp(enterStairsX, enterStairsZ, _maze);
             _maze.ReplaceCell(stairToUp);
-            
+
             var randomGroundDeadEnd = GetDeadEnd().GetRandom();
+            if (randomGroundDeadEnd == null)
+            {
+                randomGroundDeadEnd = _maze.Cells.OfType<Ground>().GetRandom();
+            }
 
             var stairToDown = new StairToDown(randomGroundDeadEnd.X, randomGroundDeadEnd.Z, _maze);
             _maze.ReplaceCell(stairToDown);
@@ -103,7 +111,7 @@ namespace Assets.Maze
             _maze.Player = new Player(enterStairsX, enterStairsZ, _maze);
         }
 
-        private void GenerateWall()
+        private void GenerateFullWall()
         {
             for (int y = 0; y < _maze.Height; y++)
             {
@@ -115,7 +123,7 @@ namespace Assets.Maze
             }
         }
 
-        private void GenerateGround(int enterStairsX, int enterStairsZ)
+        private void GenerateGroundV1(int enterStairsX, int enterStairsZ)
         {
             var keyCell = _maze.Cells.Single(c => c.X == enterStairsX && c.Z == enterStairsZ);
             var greenWall = new List<ICell>();
@@ -126,15 +134,80 @@ namespace Assets.Maze
                 var ground = new Ground(keyCell.X, keyCell.Z, _maze);
                 _maze.ReplaceCell(ground);
 
-                var nearWall = GetNearCells<Wall>(keyCell);
+                var nearWall = GetNear4Cells<Wall>(keyCell);
 
                 greenWall.AddRange(nearWall);
                 greenWall = greenWall
-                    .Where(wall => GetNearCells<Ground>(wall).Count() <= 1)
+                    .Where(wall => GetNear4Cells<Ground>(wall).Count() <= 1)
                     .ToList();
 
                 keyCell = greenWall.GetRandom();
             } while (greenWall.Any());
+        }
+
+        private void GenerateGroundV2(int enterStairsX, int enterStairsZ)
+        {
+            var mazeWithWeight = _maze.Cells.Select(x => new CellWithWeight
+            {
+                Cell = x,
+                Weight = 0
+            }).ToList();
+
+            var keyCell = mazeWithWeight.Single(c => c.Cell.X == enterStairsX && c.Cell.Z == enterStairsZ);
+            var sumWeight = 0f;
+            do
+            {
+                var groundCellWithWeight = new CellWithWeight
+                {
+                    Cell = new Ground(keyCell.Cell.X, keyCell.Cell.Z, _maze),
+                    Weight = 0
+                };
+                mazeWithWeight.ReplaceCell(groundCellWithWeight);
+
+                UpdateWeight(mazeWithWeight, keyCell);
+
+                keyCell = mazeWithWeight.GetRandomByWeight();
+                sumWeight = mazeWithWeight.Sum(x => x.Weight);
+            } while (sumWeight > 0);
+
+            _maze.Cells = mazeWithWeight.Select(x => x.Cell).ToList();
+        }
+
+        private void UpdateWeight(List<CellWithWeight> mazeWithWeight, CellWithWeight keyCell)
+        {
+            foreach (var cellWithWeight in mazeWithWeight.Where(x => x.Cell is Wall))
+            {
+                if (IsNear(cellWithWeight.Cell, keyCell.Cell))
+                {
+                    if (!cellWithWeight.IsReadyToBreak)
+                    {
+                        cellWithWeight.IsReadyToBreak = true;
+                        cellWithWeight.Weight = 1f;
+                    }
+
+                    cellWithWeight.Weight -= NearCellChance;
+                }
+                else if (IsNearCross(cellWithWeight.Cell, keyCell.Cell))
+                {
+                    if (!cellWithWeight.IsReadyToBreak)
+                    {
+                        continue;
+                    }
+
+                    //if (!cellWithWeight.IsReadyToBreak)
+                    //{
+                    //    cellWithWeight.IsReadyToBreak = true;
+                    //    cellWithWeight.Weight = 1f;
+                    //}
+
+                    cellWithWeight.Weight -= NearCrossCellChance;
+                }
+
+                if (cellWithWeight.Weight < 0)
+                {
+                    cellWithWeight.Weight = 0;
+                }
+            }
         }
 
         private void GenerateCoins(double chanceOfCoin)
@@ -149,15 +222,27 @@ namespace Assets.Maze
             }
         }
 
-        private List<T> GetNearCells<T>(ICell keyCell) where T : BaseCell
+        private List<T> GetNear4Cells<T>(ICell keyCell) where T : BaseCell
         {
-            return _maze.Cells.Where(
-                cell => cell.X == keyCell.X && cell.Z == keyCell.Z - 1
-                || cell.X == keyCell.X && cell.Z == keyCell.Z + 1
-                || cell.X == keyCell.X + 1 && cell.Z == keyCell.Z
-                || cell.X == keyCell.X - 1 && cell.Z == keyCell.Z)
+            return _maze.Cells.Where(cell => IsNear(cell, keyCell))
                 .OfType<T>()
                 .ToList();
+        }
+
+        private bool IsNear(ICell cellOne, ICell cellTwo)
+        {
+            return cellOne.X == cellTwo.X && cellOne.Z == cellTwo.Z - 1
+                || cellOne.X == cellTwo.X && cellOne.Z == cellTwo.Z + 1
+                || cellOne.X == cellTwo.X + 1 && cellOne.Z == cellTwo.Z
+                || cellOne.X == cellTwo.X - 1 && cellOne.Z == cellTwo.Z;
+        }
+
+        private bool IsNearCross(ICell cellOne, ICell cellTwo)
+        {
+            return cellOne.X == cellTwo.X + 1 && cellOne.Z == cellTwo.Z + 1
+                || cellOne.X == cellTwo.X + 1 && cellOne.Z == cellTwo.Z - 1
+                || cellOne.X == cellTwo.X - 1 && cellOne.Z == cellTwo.Z + 1
+                || cellOne.X == cellTwo.X - 1 && cellOne.Z == cellTwo.Z - 1;
         }
 
         //private ICell GetRandom(IEnumerable<ICell> cells)
@@ -189,7 +274,7 @@ namespace Assets.Maze
         {
             return _maze.Cells.OfType<Ground>()
                 .Where(x =>
-                    GetNearCells<BaseCell>(x).Count() - GetNearCells<Wall>(x).Count() == 1);
+                    GetNear4Cells<BaseCell>(x).Count() - GetNear4Cells<Wall>(x).Count() == 1);
         }
     }
 }

@@ -93,6 +93,11 @@ public class MazeGeneratorLogicScript : MonoBehaviour
                 gameObject = Instantiate(stairsDownTemplate);
             }
 
+            if (cell is Tower)
+            {
+                gameObject = Instantiate(towerTemplate);
+            }
+
             CoreObjectHelper.MoveCellToPosition(gameObject, cell.X, cell.Z);
 
             Landscape.Add(gameObject);

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.MazeGenerationScript
 {
@@ -68,9 +69,15 @@ namespace Assets.MazeGenerationScript
                     cell = new Fountain(0, 0, null);
                 }
 
+                var towerGameObj = cellGameObject.GetComponent<TowerScript>();
+                if (towerGameObj != null)
+                {
+                    cell = new Tower(0, 0, null);
+                }
+
                 if (cell == null)
                 {
-                    var a = 12223;
+                    Debug.LogError($"We try to save {cellGameObject.name}. But we havn't bissness object for it");
                 }
 
                 var baseCell = cellGameObject.GetComponentInChildren<BaseCellScript>();

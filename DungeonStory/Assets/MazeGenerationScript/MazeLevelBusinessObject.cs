@@ -1,4 +1,5 @@
-﻿using Assets.Maze.Cell;
+﻿using Assets.Helpers;
+using Assets.Maze.Cell;
 using Assets.MazeGenerationScript.Cell;
 using System;
 using System.Collections.Generic;
@@ -54,21 +55,18 @@ namespace Assets.Maze
             Cells = new List<ICell>();
         }
 
+        public void ReplaceCell(ICell cell)
+        {
+            Cells.ReplaceCell(cell);
+        }
+
         /// <summary>
         /// Новая ячейка будет помещена в список Cells
         /// </summary>
         /// <param name="cell"></param>
-        public void ReplaceCell(ICell cell)
-        {
-            ReplaceCell(Cells, cell);
-        }
-
         public void ReplaceCell(List<ICell> cells, ICell cell)
         {
-            var oldCell = cells
-                .Single(currentCell => currentCell.X == cell.X && currentCell.Z == cell.Z);
-            cells.Remove(oldCell);
-            cells.Add(cell);
+            cells.ReplaceCell(cell);
         }
     }
 }
